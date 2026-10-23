@@ -1,0 +1,25 @@
+name: "heartdisease"
+display_name: "UCI Cleveland Heart Disease"
+data_path: "data/processed/heartdisease_clean.parquet"
+weights_path: "configs/weights/heartdisease_weights.json"
+provenance_path: "configs/weights/provenance.csv"
+
+target: "target"
+seed: 42
+
+top_k: [3, 5, 8, 10]
+
+features:
+  - age
+  - sex
+  - cp
+  - trestbps
+  - chol
+  - fbs
+  - restecg
+  - thalach
+  - exang
+  - oldpeak
+  - slope
+  - ca
+  - thal

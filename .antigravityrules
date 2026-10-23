@@ -1,0 +1,11 @@
+# Global Rules
+output_style: unified_diffs_only
+no_entire_file_rewrites: true
+conversational_preamble: false
+
+# Python Environment Rules
+standard: PEP8
+testing_command: pytest -q
+linter: ruff
+linter_mode: errors_only
+verbose_stack_traces: false

@@ -1,0 +1,40 @@
+{
+  "_meta": {
+    "dataset": "breast_cancer",
+    "version": "1.0",
+    "source": "WDBC / Pathological diagnostic consensus",
+    "default_weight": 1.0
+  },
+  "weights": {
+    "mean_radius": 0.9,
+    "mean_texture": 0.5,
+    "mean_perimeter": 0.9,
+    "mean_area": 0.9,
+    "mean_smoothness": 0.4,
+    "mean_compactness": 0.7,
+    "mean_concavity": 0.9,
+    "mean_concave_points": 0.9,
+    "mean_symmetry": 0.5,
+    "mean_fractal_dimension": 0.3,
+    "radius_error": 0.5,
+    "texture_error": 0.3,
+    "perimeter_error": 0.5,
+    "area_error": 0.5,
+    "smoothness_error": 0.2,
+    "compactness_error": 0.3,
+    "concavity_error": 0.4,
+    "concave_points_error": 0.4,
+    "symmetry_error": 0.3,
+    "fractal_dimension_error": 0.2,
+    "worst_radius": 1.0,
+    "worst_texture": 0.6,
+    "worst_perimeter": 1.0,
+    "worst_area": 1.0,
+    "worst_smoothness": 0.5,
+    "worst_compactness": 0.8,
+    "worst_concavity": 1.0,
+    "worst_concave_points": 1.0,
+    "worst_symmetry": 0.6,
+    "worst_fractal_dimension": 0.3
+  }
+}

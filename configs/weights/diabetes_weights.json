@@ -1,0 +1,31 @@
+{
+  "_meta": {
+    "dataset": "diabetes",
+    "version": "1.0",
+    "source": "CDC BRFSS Health Indicators / Clinical guidelines",
+    "default_weight": 1.0
+  },
+  "weights": {
+    "high_bp": 1.0,
+    "high_chol": 0.9,
+    "bmi": 1.0,
+    "gen_hlth": 1.0,
+    "phys_hlth": 0.8,
+    "ment_hlth": 0.5,
+    "age": 0.9,
+    "heart_diseaseor_attack": 1.0,
+    "stroke": 1.0,
+    "diff_walk": 0.9,
+    "smoker": 0.6,
+    "income": 0.3,
+    "education": 0.3,
+    "sex": 0.2,
+    "fruits": 0.2,
+    "veggies": 0.2,
+    "hvy_alcohol_consump": 0.2,
+    "any_healthcare": 0.2,
+    "no_docbc_cost": 0.2,
+    "chol_check": 0.4,
+    "phys_activity": 0.4
+  }
+}

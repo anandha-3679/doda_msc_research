@@ -1,0 +1,23 @@
+{
+  "_meta": {
+    "dataset": "heartdisease",
+    "version": "1.0",
+    "source": "UCI Heart Disease (Cleveland) / AHA Guidelines",
+    "default_weight": 1.0
+  },
+  "weights": {
+    "age": 0.9,
+    "sex": 0.6,
+    "cp": 1.0,
+    "trestbps": 0.9,
+    "chol": 0.8,
+    "fbs": 0.6,
+    "restecg": 0.8,
+    "thalach": 0.8,
+    "exang": 1.0,
+    "oldpeak": 1.0,
+    "slope": 0.9,
+    "ca": 1.0,
+    "thal": 1.0
+  }
+}

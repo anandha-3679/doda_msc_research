@@ -1,0 +1,89 @@
+dataset,feature,weight,source,evidence_type,rationale
+diabetes,high_bp,1.0,WHO & ADA Guidelines,guideline,Established major cardiovascular and metabolic risk factor for diabetes
+diabetes,high_chol,0.9,WHO & ADA Guidelines,guideline,Dyslipidemia strongly correlated with insulin resistance
+diabetes,bmi,1.0,WHO & ADA Guidelines,guideline,Primary clinical diagnostic and risk indicator for Type 2 diabetes
+diabetes,gen_hlth,1.0,BRFSS Survey & Epidemiological Reviews,review,Strong global self-reported predictor of underlying morbidity
+diabetes,phys_hlth,0.8,BRFSS Survey & Epidemiological Reviews,review,Reflects physical illness and symptom burden
+diabetes,ment_hlth,0.5,Clinical literature,review,Bidirectional link with chronic disease management and depression
+diabetes,age,0.9,WHO & ADA Guidelines,guideline,Incidence strongly increases with age brackets
+diabetes,heart_diseaseor_attack,1.0,WHO & ADA Guidelines,guideline,Major macrovascular complication/co-morbidity
+diabetes,stroke,1.0,WHO & ADA Guidelines,guideline,High vascular risk factor and complication
+diabetes,diff_walk,0.9,Functional mobility studies,expert,Indicator of severe metabolic neuropathy and vascular decline
+diabetes,smoker,0.6,WHO Tobacco & Diabetes report,guideline,Active smoking impairs insulin sensitivity
+diabetes,income,0.3,Social determinants of health,review,Socioeconomic proxy; secondary to clinical biomarkers
+diabetes,education,0.3,Social determinants of health,review,Socioeconomic indicator; secondary to clinical biomarkers
+diabetes,sex,0.2,Demographic covariates,expert,Weak direct biological differentiator compared to metabolic markers
+diabetes,fruits,0.2,Dietary guidelines,expert,Lifestyle component; indirect impact
+diabetes,veggies,0.2,Dietary guidelines,expert,Lifestyle component; indirect impact
+diabetes,hvy_alcohol_consump,0.2,Epidemiological literature,review,Moderate correlation with pancreatic and liver function
+diabetes,any_healthcare,0.2,Healthcare access,expert,Administrative access indicator
+diabetes,no_docbc_cost,0.2,Healthcare access,expert,Economic barrier indicator
+diabetes,chol_check,0.4,Screening behavior,review,Surveillance proxy for preventative care
+diabetes,phys_activity,0.4,WHO Physical Activity Guidelines,guideline,Protective factor against metabolic syndrome
+heartdisease,age,0.9,AHA/ACC Guidelines,guideline,Major independent non-modifiable cardiovascular risk factor
+heartdisease,sex,0.6,AHA Guidelines,guideline,Demographic risk factor; males and post-menopausal females at elevated risk
+heartdisease,cp,1.0,AHA/ACC Angina Guidelines,guideline,Chest pain type is a primary hallmark symptom of coronary ischemia
+heartdisease,trestbps,0.9,AHA/ACC Hypertension Guidelines,guideline,Resting blood pressure reflects cardiovascular workload and vascular strain
+heartdisease,chol,0.8,NCEP ATP III / AHA,guideline,Serum cholesterol directly contributes to atherogenesis and plaque formation
+heartdisease,fbs,0.6,ADA / AHA Joint Statement,guideline,Fasting blood sugar > 120 mg/dl is an indicator of metabolic syndrome/diabetes comorbidity
+heartdisease,restecg,0.8,AHA Electrocardiography Consensus,guideline,"Resting ECG abnormalities (ST depression, LVH) indicate cardiac stress or remodeling"
+heartdisease,thalach,0.8,AHA Exercise Testing Guidelines,guideline,Maximum heart rate achieved during exercise test evaluates functional cardiac reserve
+heartdisease,exang,1.0,AHA/ACC Angina Guidelines,guideline,Exercise-induced angina is a pathognomonic diagnostic criterion for inducible ischemia
+heartdisease,oldpeak,1.0,AHA/ACC Stress Testing Criteria,guideline,ST depression induced by exercise relative to rest is strong quantitative ischemic biomarker
+heartdisease,slope,0.9,AHA/ACC Stress Testing Criteria,guideline,Slope of the peak exercise ST segment discriminates true ischemic changes (downsloping/horizontal vs upsloping)
+heartdisease,ca,1.0,ACC/AHA Coronary Angiography Criteria,guideline,Number of major vessels (0-3) colored by flourosopy directly reflects anatomic coronary disease severity
+heartdisease,thal,1.0,ASNC / AHA Myocardial Perfusion Standards,guideline,"Thallium scintigraphy defect status (normal, fixed, reversible) identifies viable vs infarcted ischemic myocardium"
+breast_cancer,mean_radius,0.9,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: radius assesses average cellular differentiation
+breast_cancer,mean_texture,0.5,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Mean nuclear morphology metric: texture assesses average cellular differentiation
+breast_cancer,mean_perimeter,0.9,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: perimeter assesses average cellular differentiation
+breast_cancer,mean_area,0.9,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: area assesses average cellular differentiation
+breast_cancer,mean_smoothness,0.4,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Mean nuclear morphology metric: smoothness assesses average cellular differentiation
+breast_cancer,mean_compactness,0.7,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: compactness assesses average cellular differentiation
+breast_cancer,mean_concavity,0.9,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: concavity assesses average cellular differentiation
+breast_cancer,mean_concave_points,0.9,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: concave_points assesses average cellular differentiation
+breast_cancer,mean_symmetry,0.5,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Mean nuclear morphology metric: symmetry assesses average cellular differentiation
+breast_cancer,mean_fractal_dimension,0.3,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Mean nuclear morphology metric: fractal_dimension assesses average cellular differentiation
+breast_cancer,radius_error,0.5,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: radius measures intra-tumor morphological variation
+breast_cancer,texture_error,0.3,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: texture measures intra-tumor morphological variation
+breast_cancer,perimeter_error,0.5,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: perimeter measures intra-tumor morphological variation
+breast_cancer,area_error,0.5,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: area measures intra-tumor morphological variation
+breast_cancer,smoothness_error,0.2,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: smoothness measures intra-tumor morphological variation
+breast_cancer,compactness_error,0.3,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: compactness measures intra-tumor morphological variation
+breast_cancer,concavity_error,0.4,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: concavity measures intra-tumor morphological variation
+breast_cancer,concave_points_error,0.4,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: concave_points measures intra-tumor morphological variation
+breast_cancer,symmetry_error,0.3,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: symmetry measures intra-tumor morphological variation
+breast_cancer,fractal_dimension_error,0.2,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: fractal_dimension measures intra-tumor morphological variation
+breast_cancer,worst_radius,1.0,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: radius indicates peak extreme nuclear atypia
+breast_cancer,worst_texture,0.6,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Largest 3-cell nuclear measurement: texture indicates peak extreme nuclear atypia
+breast_cancer,worst_perimeter,1.0,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: perimeter indicates peak extreme nuclear atypia
+breast_cancer,worst_area,1.0,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: area indicates peak extreme nuclear atypia
+breast_cancer,worst_smoothness,0.5,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Largest 3-cell nuclear measurement: smoothness indicates peak extreme nuclear atypia
+breast_cancer,worst_compactness,0.8,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: compactness indicates peak extreme nuclear atypia
+breast_cancer,worst_concavity,1.0,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: concavity indicates peak extreme nuclear atypia
+breast_cancer,worst_concave_points,1.0,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: concave_points indicates peak extreme nuclear atypia
+breast_cancer,worst_symmetry,0.6,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Largest 3-cell nuclear measurement: symmetry indicates peak extreme nuclear atypia
+breast_cancer,worst_fractal_dimension,0.3,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Largest 3-cell nuclear measurement: fractal_dimension indicates peak extreme nuclear atypia
+ckd,age,0.55,KDIGO Clinical Practice Guideline,guideline,Non-modifiable demographic risk factor; declining eGFR with advancing age
+ckd,bp,0.8,KDIGO Blood Pressure Management Guideline,guideline,Hypertension is both a primary cause and consequence of CKD progression
+ckd,sg,0.85,KDIGO Urine Evaluation Consensus,guideline,Specific gravity measures renal tubular concentrating ability; loss reflects tubular damage
+ckd,al,1.0,KDIGO CKD Evaluation & Management (CGA Staging),guideline,Albuminuria is primary hallmark for CKD staging (A1-A3) and renal disease progression
+ckd,su,0.55,KDIGO Diabetes Management in CKD,guideline,Glycosuria reflects diabetic nephropathy or impaired proximal tubular glucose reabsorption
+ckd,rbc,0.55,KDIGO Glomerular Disease Guidelines,guideline,Dysmorphic red blood cells in urine indicate active glomerular hematuria/nephritis
+ckd,pc,0.5,Clinical Nephrology Literature,review,Pyuria reflects renal parenchymal inflammation or tubulointerstitial infection
+ckd,pcc,0.4,Clinical Nephrology Literature,review,Pus cell clumps indicate severe urinary tract infection or interstitial nephritis
+ckd,ba,0.4,Clinical Nephrology Literature,review,Bacteriuria identifies infection confounding renal functional status
+ckd,bgr,0.7,ADA / KDIGO Joint Consensus on Diabetes in CKD,guideline,Blood glucose control is primary determinant in preventing diabetic kidney disease
+ckd,bu,0.9,KDIGO Acute & Chronic Kidney Disease Guidelines,guideline,Blood urea nitrogen directly tracks uremic toxin retention and reduced glomerular clearance
+ckd,sc,1.0,KDIGO 2012 / 2024 Clinical Practice Guideline for CKD,guideline,Serum creatinine is core international diagnostic biomarker used for calculating eGFR and G-staging
+ckd,sod,0.65,KDIGO Fluid & Electrolyte Consensus,guideline,Serum sodium imbalance indicates impaired renal water excretion or dilutional hyponatremia
+ckd,pot,0.65,KDIGO Hyperkalemia Clinical Consensus,guideline,Hyperkalemia is critical complication resulting from reduced tubular potassium excretion in advanced CKD
+ckd,hemo,0.75,KDIGO Anemia Management in CKD Guideline,guideline,Anemia develops secondary to deficient renal erythropoietin production
+ckd,pcv,0.7,KDIGO Anemia Management in CKD Guideline,guideline,Packed cell volume (hematocrit) monitors severity of CKD-induced anemia
+ckd,wbcc,0.4,Clinical Nephrology Literature,review,White blood cell count serves as non-specific systemic inflammatory marker
+ckd,rbcc,0.55,KDIGO Anemia Management in CKD Guideline,guideline,Red blood cell count reflects erythropoietic suppression in renal failure
+ckd,htn,0.85,KDIGO Clinical Practice Guideline for BP in CKD,guideline,Hypertension diagnosis is a major hallmark etiology and accelerator of nephrosclerosis
+ckd,dm,0.8,KDIGO Clinical Practice Guideline for Diabetes in CKD,guideline,Diabetes mellitus is the single leading worldwide cause of end-stage renal disease
+ckd,cad,0.45,KDIGO Cardiovascular Disease in CKD Guidelines,guideline,Cardiovascular disease is major comorbidity and primary cause of mortality in CKD
+ckd,appet,0.4,KDIGO Nutrition in CKD Guidelines,guideline,Anorexia / poor appetite is clinical symptom of uremic toxicity
+ckd,pe,0.65,KDIGO CKD Evaluation Consensus,guideline,Pedal edema indicates intravascular fluid overload and severe nephrotic proteinuria
+ckd,ane,0.7,KDIGO Anemia in CKD Guidelines,guideline,Clinical anemia symptom presentation reflects symptomatic chronic renal dysfunction

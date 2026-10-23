@@ -1,0 +1,34 @@
+name: "diabetes"
+display_name: "CDC BRFSS Diabetes Health Indicators"
+data_path: "data/processed/diabetes_clean.parquet"
+weights_path: "configs/weights/diabetes_weights.json"
+provenance_path: "configs/weights/provenance.csv"
+
+target: "diabetes_binary"
+sample_size: 10000  # Default stratified sample for fast fold cross-validation, full 253k optional
+seed: 42
+
+top_k: [5, 10, 15, 20]
+
+features:
+  - high_bp
+  - high_chol
+  - chol_check
+  - bmi
+  - smoker
+  - stroke
+  - heart_diseaseor_attack
+  - phys_activity
+  - fruits
+  - veggies
+  - hvy_alcohol_consump
+  - any_healthcare
+  - no_docbc_cost
+  - gen_hlth
+  - ment_hlth
+  - phys_hlth
+  - diff_walk
+  - sex
+  - age
+  - education
+  - income

@@ -1,0 +1,34 @@
+{
+  "_meta": {
+    "dataset": "ckd",
+    "version": "1.0",
+    "source": "BD-KDD Chronic Kidney Disease / KDIGO Guidelines",
+    "default_weight": 1.0
+  },
+  "weights": {
+    "age": 0.55,
+    "bp": 0.8,
+    "sg": 0.85,
+    "al": 1.0,
+    "su": 0.55,
+    "rbc": 0.55,
+    "pc": 0.5,
+    "pcc": 0.4,
+    "ba": 0.4,
+    "bgr": 0.7,
+    "bu": 0.9,
+    "sc": 1.0,
+    "sod": 0.65,
+    "pot": 0.65,
+    "hemo": 0.75,
+    "pcv": 0.7,
+    "wbcc": 0.4,
+    "rbcc": 0.55,
+    "htn": 0.85,
+    "dm": 0.8,
+    "cad": 0.45,
+    "appet": 0.4,
+    "pe": 0.65,
+    "ane": 0.7
+  }
+}
