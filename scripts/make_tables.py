@@ -71,18 +71,26 @@ def analyze_results(results_path: str = "results/diabetes/runs.parquet", out_dir
 
                         if len(base_df) > 0 and len(doda_df) == len(base_df):
                             diffs = doda_df["roc_auc"].values - base_df["roc_auc"].values
-                            # Determine sample size for Nadeau-Bengio
+                            # Determine sample size dynamically for Nadeau-Bengio
                             dataset_name = df["dataset"].iloc[0] if "dataset" in df.columns else ""
-                            if "heart" in dataset_name.lower():
-                                n_tr, n_te = 242, 61
-                            elif "diabetes" in dataset_name.lower():
-                                n_tr, n_te = 8000, 2000
-                            elif "cancer" in dataset_name.lower() or "breast" in dataset_name.lower():
-                                n_tr, n_te = 455, 114
-                            elif "ckd" in dataset_name.lower():
-                                n_tr, n_te = 320, 80
+                            cfg_file = ROOT_DIR / f"configs/datasets/{dataset_name}.yaml"
+                            if cfg_file.exists():
+                                import yaml
+                                with open(cfg_file, "r", encoding="utf-8") as yf:
+                                    dcfg = yaml.safe_load(yf)
+                                sample_n = dcfg.get("sample_size")
+                                if sample_n:
+                                    n_total = sample_n
+                                else:
+                                    d_path = ROOT_DIR / dcfg["data_path"]
+                                    n_total = len(pd.read_parquet(d_path)) if d_path.exists() else 400
                             else:
-                                n_tr, n_te = 800, 200
+                                n_total = 400
+
+                            # 5-fold CV splits: n_test = round(N / 5), n_train = N - n_test
+                            n_splits = 5
+                            n_te = int(np.rint(n_total / n_splits))
+                            n_tr = int(n_total - n_te)
 
                             res_02 = run_tost(diffs, epsilon=0.02, n_train=n_tr, n_test=n_te)
                             res_01 = run_tost(diffs, epsilon=0.01, n_train=n_tr, n_test=n_te)

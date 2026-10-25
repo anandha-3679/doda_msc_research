@@ -133,13 +133,16 @@ def run_experiment(
     out_path.mkdir(parents=True, exist_ok=True)
     manifest_file = out_path / "config_manifest.json"
 
+    script_path = Path(__file__).resolve()
     current_config = {
         "dataset_name": cfg["name"],
         "dataset_cfg_path": str(dataset_cfg_path),
+        "dataset_cfg_sha256": compute_file_sha256(Path(dataset_cfg_path)),
         "data_path": str(data_path),
         "data_sha256": compute_file_sha256(Path(data_path)),
         "weights_path": str(weights_path),
         "weights_sha256": compute_file_sha256(Path(weights_path)),
+        "script_sha256": compute_file_sha256(script_path),
         "n_splits": int(n_splits),
         "n_repeats": int(n_repeats),
         "selectors": sorted(selectors),
