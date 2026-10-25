@@ -13,7 +13,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from typing import Dict, List
+from typing import Dict, List, Optional
 import numpy as np
 import pandas as pd
 import yaml
@@ -119,6 +119,51 @@ def run_experiment(
     total_folds = n_splits * n_repeats
     print(f"Starting {total_folds} CV folds ({n_splits} splits x {n_repeats} repeats)...")
 
+    # Enforce isolated directory and configuration manifest check
+    out_path = Path(out_dir)
+    out_path.mkdir(parents=True, exist_ok=True)
+    manifest_file = out_path / "config_manifest.json"
+
+    current_config = {
+        "dataset_name": cfg["name"],
+        "dataset_cfg_path": str(dataset_cfg_path),
+        "data_path": str(data_path),
+        "weights_path": str(weights_path),
+        "n_splits": int(n_splits),
+        "n_repeats": int(n_repeats),
+        "selectors": sorted(selectors),
+        "fusion_methods": sorted(fusion_methods),
+        "lambdas": [float(x) for x in lambdas],
+        "classifiers": sorted(classifiers),
+        "top_k": list(top_k_list),
+        "seed": int(seed),
+        "sample_size": sample_n,
+    }
+
+    existing_repeats = list(out_path.glob("repeat_*.parquet"))
+    if manifest_file.exists():
+        import json
+        with open(manifest_file, "r", encoding="utf-8") as mf:
+            saved_config = json.load(mf)
+        if saved_config != current_config:
+            raise ValueError(
+                f"Configuration mismatch in output directory '{out_dir}'! Existing runs were executed with a different config:\n"
+                f"Saved: {saved_config}\n"
+                f"Current: {current_config}\n"
+                f"Use a clean or distinct --out directory to avoid mixing results."
+            )
+    elif existing_repeats:
+        # Checkpoints exist but no manifest: warn or abort to prevent silent corruption
+        raise RuntimeError(
+            f"Output directory '{out_dir}' contains existing repeat files ({len(existing_repeats)} found) "
+            f"without a config_manifest.json. Aborting to prevent silent mixing of incompatible configurations. "
+            f"Please specify an isolated output directory or clean the existing folder."
+        )
+    else:
+        import json
+        with open(manifest_file, "w", encoding="utf-8") as mf:
+            json.dump(current_config, mf, indent=2)
+
     fold_idx = 0
     start_time = time.time()
 
@@ -130,7 +175,6 @@ def run_experiment(
         if repeat_num < start_repeat or repeat_num > end_rep:
             continue
 
-        out_path = Path(out_dir)
         checkpoint_file = out_path / f"repeat_{repeat_num}.parquet"
         if checkpoint_file.exists():
             if fold_idx % n_splits == 0:
