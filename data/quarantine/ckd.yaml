@@ -1,6 +1,7 @@
-name: "ckd"
-display_name: "Chronic Kidney Disease (BD-KDD / KDIGO)"
-data_path: "data/processed/ckd_clean.parquet"
+name: "ckd_quarantined"
+display_name: "Chronic Kidney Disease (BD-KDD / KDIGO) [STATUS: QUARANTINED]"
+quarantined: true
+data_path: "data/quarantine/ckd_clean.parquet"
 weights_path: "configs/weights/ckd_weights.json"
 provenance_path: "configs/weights/provenance.csv"
 

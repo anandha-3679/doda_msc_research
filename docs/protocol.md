@@ -21,9 +21,9 @@ DODA (Decoupled Operator-Driven Architecture) is a selector-agnostic integration
   - **Multiple Testing**: Benjamini–Hochberg False Discovery Rate (FDR) control applied across all compared selector $\times$ classifier $\times$ Top-$K$ combinations within each dataset.
 
 ### RQ2 (Ranking Controllability & Descriptive Trade-off)
-- **Controllability**: Alignment between selected features and clinical priority profiles is measured via Spearman rank correlation $\rho$ and Top-$K$ clinical weight share across $\lambda \in [0.0, 0.25, 0.50, 0.75, 1.0]$.
-- **Descriptive Trade-off**: Characterize the alignment-vs-performance curve ($\rho$ vs. $\Delta \text{ROC-AUC}$) as a descriptive Pareto frontier.
-- **Operational $\lambda^*$ Selection**: Any recommended $\lambda^*$ must be selected via inner nested CV on the training folds (the largest $\lambda$ satisfying non-inferiority on train validation splits), never by inspecting test fold outcomes.
+- **Controllability**: Alignment between selected features and clinical priority profiles is measured via Spearman rank correlation $\rho$ and Top-$K$ clinical weight share across a prespecified fixed descriptive grid $\lambda \in [0.0, 0.25, 0.50, 0.75, 1.0]$.
+- **Descriptive Trade-off**: Characterize the alignment-vs-performance curve ($\rho$ vs. $\Delta \text{ROC-AUC}$) as an empirical Pareto frontier.
+- **Fixed-Grid Design & Deployment $\lambda^*$ Workflow**: Current experimental results report the complete prespecified descriptive grid across all folds to map the full empirical trade-off. Dynamic selection of a single operational default $\lambda^*$ via inner nested cross-validation on training splits (selecting the maximal $\lambda$ satisfying train validation non-inferiority) represents an intended future clinical deployment workflow, not an implemented experimental result in this study.
 
 ### RQ3 (Negative Controls & Benchmark Comparators)
 1. **Negative Controls Grid (Frozen across all datasets)**:
@@ -54,12 +54,25 @@ DODA (Decoupled Operator-Driven Architecture) is a selector-agnostic integration
   - **Small-$K$ Track**: Evaluate $K \in \{2, 3\}$ for both baseline and DODA under paired 5x10 CV; reuse $K=5$ from the main grid.
   - Stored separately in `results/breast_cancer_small_k/runs.parquet`.
 - **CDC BRFSS Diabetes ($N=10,000$ stratified subsample from $253,680$, $D=21$, seed 42)**: Large population epidemiological cohort.
-- **CKD Baseline Check ($N=988$, $D=24$)**: Compute baseline AUC before classifying as a "hard" benchmark.
+- **Canonical UCI CKD ($N=400$, $D=24$)**: Apollo Hospitals benchmark evaluating KDIGO priors under paired 5x10 CV across all K budgets ($K \in [5, 10, 15, 20]$). High baseline separation acts as a clinical alignment and invariance testbed. (Suspect BD-KDD 988-row variant quarantined into `data/quarantine/`).
 
 ---
 
-## 4. Execution Order & Storage Rules
-1. Order: Heart Disease $\rightarrow$ WDBC $\rightarrow$ Diabetes.
+## 4. Primary Grid Definition Across All Four Datasets
+
+The primary benchmark grid is evaluated uniformly across all **4 eligible clinical datasets** (Heart Disease, WDBC Breast Cancer, Canonical UCI CKD, and CDC BRFSS Diabetes) with the following mandatory design:
+- **5 Selectors**: ANOVA, LASSO, Random Forest, mRMR, and Boruta.
+- **3 Classifiers / Models**: Logistic Regression (`logreg`), Random Forest (`random_forest`), and XGBoost (`xgboost`).
+- **4 Top-$K$ Budgets**: 4 dataset-appropriate Top-$K$ values ($[3, 5, 8, 10]$ for Heart Disease; $[5, 10, 15, 20]$ for WDBC, CKD, Diabetes).
+- **5 Lambdas**: Prespecified fixed descriptive grid $\lambda \in \{0.0, 0.25, 0.50, 0.75, 1.0\}$.
+- **2 Fusion Operators**: Hadamard and RRF.
+- **Cross-Validation**: 5 splits $\times$ 10 repeats = 50 folds Repeated Stratified K-Fold CV.
+- Total evaluations per dataset = $50 \times 5 \times 2 \times 5 \times 4 \times 3 = 30,000$ evaluations ($120,000$ total evaluations across the 4 cohorts).
+
+---
+
+## 5. Execution Order & Storage Rules
+1. Order: Heart Disease $\rightarrow$ WDBC $\rightarrow$ Canonical UCI CKD $\rightarrow$ Diabetes.
 2. Grid definitions are strictly frozen prior to running experiments.
-3. Results are append-only; existing runs in `results/*/runs.parquet` are never overwritten.
+3. Results are saved in isolated runs directories (`results/<dataset>/runs.parquet`). Historical baseline runs are preserved in versioned backups.
 4. Tables and figures are generated strictly via `scripts/make_tables.py` and `scripts/make_figures.py`.

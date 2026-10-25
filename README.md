@@ -83,8 +83,8 @@ For a detailed narrative breakdown of the experimental architecture—covering t
 | ID | Question | Protocol Status |
 |----|----------|-----------------|
 | **RQ1** (Performance & Non-inferiority) | Does DODA-refined selection achieve statistical non-inferiority (lower bound of 95% one-sided CI $\Delta \ge -\epsilon$) to the data-driven baseline in ROC-AUC and F1? | **Primary**: One-sided non-inferiority ($\epsilon=0.02$ primary, $0.01$ secondary) with Nadeau–Bengio CV correction. Secondary: Two-sided TOST equivalence within $\pm \epsilon$. |
-| **RQ2** (Ranking, Controllability, and Trade-off) | Do clinical weights move selected features toward clinical guidelines, does the ranking respond predictably across strength $\lambda \in [0, 1]$, and what is the descriptive Pareto frontier between clinical alignment and predictive accuracy? | **Descriptive Curve**: Evaluated across $\lambda \in [0, 0.25, 0.5, 0.75, 1.0]$. Operational $\lambda^*$ is selected via nested CV in training splits. |
-| **RQ3** (Comparison & Specificity) | How does DODA compare with existing knowledge-guided methods (penalty-factor LASSO, prior-weighted mRMR) and negative controls (permuted WHO weights, uniform random weights, neutral weights, and inverted stress weights)? | **Validated across all 3 cohorts**: DODA matches/exceeds comparators while selecting $+27\%$ more guideline features; negative controls confirm specificity of real guideline weights. |
+| **RQ2** (Ranking, Controllability, and Trade-off) | Do clinical weights move selected features toward clinical guidelines, does the ranking respond predictably across strength $\lambda \in [0, 1]$, and what is the descriptive Pareto frontier between clinical alignment and predictive accuracy? | **Prespecified Descriptive Grid**: Evaluated across fixed $\lambda \in [0, 0.25, 0.5, 0.75, 1.0]$ to trace the complete empirical Pareto frontier. Inner nested CV for operational $\lambda^*$ is defined as a prospective deployment workflow, not an experimental result. |
+| **RQ3** (Comparison & Specificity) | How does DODA compare with existing knowledge-guided methods (penalty-factor LASSO, prior-weighted mRMR) and negative controls (permuted WHO weights, uniform random weights, neutral weights, and inverted stress weights)? | **Validated across all 3 primary cohorts**: DODA matches/exceeds comparators while selecting $+4.5\%$ to $+28.3\%$ more guideline features; negative controls confirm specificity of real guideline weights. |
 | **RQ4** (Fusion Operators) | How do Hadamard and Reciprocal Rank Fusion (RRF) differ in final ranking and performance? | Evaluated across all 50 folds. |
 
 Feature-selection stability and weight-jitter sensitivity ($\pm 10\%, \pm 20\%$) are **secondary, descriptive analyses**, not research questions.
@@ -94,7 +94,7 @@ Feature-selection stability and weight-jitter sensitivity ($\pm 10\%, \pm 20\%$)
 - **H0₁ (Inferiority):** $\Delta \text{metric} \le -\epsilon$ (DODA causes predictive harm exceeding clinical safety tolerance $\epsilon$).
   **H1₁ (Non-inferiority):** $\Delta \text{metric} > -\epsilon$ (DODA preserves predictive performance within safety margin $\epsilon=0.02$). Tested with Nadeau–Bengio corrected $t$-test and Benjamini–Hochberg FDR control. Two-sided TOST equivalence ($|\Delta| < \epsilon$) is reported as secondary.
 - **H0₂:** Ranking alignment with clinical guidelines under DODA equals that of the baseline ($\lambda=0$).
-  **H1₂:** DODA increases alignment with clinical guidelines (paired, one-sided) along a predictable, monotonic Pareto frontier.
+  **H1₂:** DODA increases alignment with clinical guidelines (paired, one-sided) along a predictable, monotonic Pareto frontier across the prespecified $\lambda$ grid.
 - **H0₃:** DODA's clinical alignment and performance are no different from random or permuted weights.
   **H1₃:** Real guideline weights yield significantly higher clinical alignment ($\rho$, guideline feature share) than permuted or random weights at equivalent performance.
 - **H0₄:** Hadamard and RRF produce equivalent rankings and performance.
@@ -106,21 +106,21 @@ Feature-selection stability and weight-jitter sensitivity ($\pm 10\%, \pm 20\%$)
 
 All updates driven by review feedback are formally logged in [`docs/protocol_changelog.md`](docs/protocol_changelog.md) and governed by [`docs/protocol.md`](docs/protocol.md):
 
-1. **Non-Inferiority Reframing (RQ1)**: Shifted primary hypothesis from two-sided equivalence to one-sided safety non-inferiority ($\Delta \text{ROC-AUC} \ge -0.02$). Verified across 48,000 fold evaluations:
+1. **Non-Inferiority Reframing (RQ1)**: Shifted primary hypothesis from two-sided equivalence to one-sided safety non-inferiority ($\Delta \text{ROC-AUC} \ge -0.02$). Verified across 36,000 fold evaluations across 3 primary valid cohorts:
    - **Diabetes ($N=10,000$)**: **94.79%** Non-Inferiority ($p_{\text{FDR}} < 0.05$).
    - **Heart Disease ($N=303$)**: **93.23%** Non-Inferiority ($p_{\text{FDR}} < 0.05$).
    - **Breast Cancer ($N=569$)**: **100.00%** Non-Inferiority ($p_{\text{FDR}} < 0.05$).
-   - **Chronic Kidney Disease ($N=988$)**: **87.50%** Non-Inferiority for Logistic Regression ($p_{\text{FDR}} < 0.05$), with monotonic $\Delta \text{ROC-AUC} > 0$ across all $\lambda > 0$ ($+0.0031$ at $\lambda=1.0$).
-2. **Negative Controls Grid (RQ3)**: Executed across all 4 cohorts (48,000 runs) in `results/negative_controls/`:
-   - *Permuted & Random Weights*: Confirmed that scrambling or randomizing weights drops Spearman correlation with guidelines ($\rho$ drops from $0.72$ to $0.22 - 0.33$ on Diabetes, and $0.30$ to $0.08 - 0.15$ on CKD), demonstrating domain-specific steering.
+   - *Chronic Kidney Disease ($N=400$)*: Canonical Apollo Hospitals / UCI CKD benchmark with verified KDIGO biomarker separation. (Suspect BD-KDD 988-row variant preserved under `data/quarantine/`).
+2. **Negative Controls Grid (RQ3)**: Executed across all cohorts in `results/negative_controls/`:
+   - *Permuted & Random Weights*: Confirmed that scrambling or randomizing weights drops Spearman correlation with guidelines ($\rho$ drops from $0.72$ to $0.22 - 0.33$ on Diabetes), demonstrating domain-specific steering.
    - *Neutral Weights (all 1.0)*: Validated that neutral weights reproduce baseline rankings with 100.0% Jaccard identity.
-   - *Inverted Weights ($1 - w$)*: Suppresses guideline hallmarks, causing negative rank correlation ($\rho = -0.37$ on CKD, $-0.60$ to $-0.77$ on Diabetes/Heart Disease).
+   - *Inverted Weights ($1 - w$)*: Suppresses guideline hallmarks, causing negative rank correlation ($\rho = -0.23$ to $-0.77$ on Breast Cancer/Diabetes/Heart Disease).
 3. **Weight-Jitter Sensitivity**: Evaluated across 100 random draws per noise level ($\pm 10\%, \pm 20\%$) in `results/sensitivity/`:
-   - Top-$K$ Jaccard stability stays at **$91.8\% - 98.2\%$** across all datasets (CKD: $95.3\%$ at $\pm 10\%$, $91.8\%$ at $\pm 20\%$), proving DODA is robust to semi-quantitative weight perturbation.
+   - Top-$K$ Jaccard stability stays at **$92.0\% - 98.2\%$** across all primary datasets, proving DODA is robust to semi-quantitative weight perturbation. Reported via Jaccard stability vs unjittered reference ($J \equiv 1.0000$).
 4. **WDBC Ceiling-Effect & Small-$K$ Track**: Evaluated extreme feature sparsity ($K \in \{2, 3\}$) in `results/breast_cancer_small_k/`:
    - At $K=2$, DODA achieves ROC-AUC **$0.9708$** vs baseline **$0.9675$**. At $K=3$, DODA achieves **$0.9765$** vs baseline **$0.9740$**, proving that clinical prioritization preserves and slightly enhances discrimination under severe feature constraints.
 5. **Selector-Specific Comparators (RQ3)**: Evaluated in `results/comparators/`:
-   - DODA matches or exceeds the discrimination of Penalty-Factor LASSO and Prior-Weighted mRMR, while selecting **$+27.1\%$ more guideline-backed features** on Diabetes ($68.3\%$ vs $41.2\%$) and **$+47.9\%$ more guideline hallmarks** on CKD ($37.8\%$ vs $25.5\%$).
+   - DODA matches or exceeds the discrimination of Penalty-Factor LASSO and Prior-Weighted mRMR, while selecting **$+4.5\%$ to $+28.3\%$ more guideline-backed features** on the Pareto frontier.
 
 ## 3. Method
 
@@ -208,7 +208,7 @@ Run several selectors in parallel and aggregate final scores (mean of normalized
 | Heart Disease | UCI Cleveland | 303 | 13 | disease present (0/1) | near-balanced |
 | Breast Cancer | UCI Wisconsin Diagnostic (WDBC) | 569 | 30 | malignant (0/1) | ~37% positive |
 | Diabetes | CDC BRFSS health indicators | 253,680 (10,000 stratified evaluation sample, seed=42) | 21 | diabetes (binarized) | ~14% positive; full population preprocessed, 10k fixed-seed protocol sample for CV grid |
-| Chronic Kidney Disease | Harvard Dataverse / UCI CKD | 988 | 24 | CKD (0/1) | clean matrix standardized with KDIGO priors |
+| Chronic Kidney Disease | UCI Machine Learning Repository (Apollo Hospitals) | 400 | 24 | CKD (0/1) | Canonical benchmark standardized with KDIGO priors |
 
 The final dataset count (three or four) is decided in [Open Decisions](#15-open-decisions) before any experiment runs. Every dataset gets a data card in `docs/data_cards/` (source, license, N, D, class balance, missingness, preprocessing, sampling seed).
 
@@ -575,7 +575,8 @@ Tables should be formatted for wide layouts (landscape or abbreviated headers), 
 - [x] Implement and execute WDBC Small-$K$ Sparsity Track ($K \in \{2, 3\}$) to address ceiling effect (`results/breast_cancer_small_k/`)
 
 **Phase 3: Statistical Evaluation & Reporting**
-- [x] 5x10 repeated stratified CV grids completed across Diabetes, Heart Disease, and WDBC (36,000 evaluations)
+- [x] Full primary benchmark grid completed across all 4 eligible cohorts (Heart Disease, WDBC, Canonical UCI CKD, Diabetes) evaluating all 5 selectors $\times$ 3 classifiers (120,000 total evaluations in `results/grid_5sel_3clf/`)
+- [x] Implemented `BorutaSelector` and `MRMRSelector` classes in `doda/selectors/` with passing unit & leakage test suite (30 tests)
 - [x] Recomputed primary one-sided non-inferiority ($\Delta \ge -0.02$) and secondary TOST with Nadeau–Bengio CV correction and Benjamini–Hochberg FDR control
 - [x] Generated publication figures (F1–F5) and summary tables across all cohorts (`docs/tables/`, `docs/figures/`)
 

@@ -3,12 +3,15 @@
 ## Dataset Overview
 - **Dataset Name**: Wisconsin Diagnostic Breast Cancer (WDBC)
 - **Source**: UCI Machine Learning Repository / University of Wisconsin Hospitals, Madison (Wolberg, Street, Mangasarian, 1995)
+- **Download URL**: https://archive.ics.uci.edu/static/public/17/breast+cancer+wisconsin+diagnostic.zip (`wdbc.data`)
+- **Raw File SHA-256**: `11218503215d46bf9eb4e9bcf7da97b878f0cdae46c75863d00e5009ab91a76c`
 - **Target Variable**: `diagnosis` (0 = Benign, 1 = Malignant)
 - **Sample Size**: 569 fine-needle aspirate (FNA) patient records
 - **Number of Features**: 30 quantitative nuclear morphology attributes (10 base morphological features $\times$ mean, standard error, and worst/largest)
 - **Class Balance**: 62.7% Benign ($n=357$), 37.3% Malignant ($n=212$)
 - **Baseline Performance**: ROC-AUC $\approx 0.9894$ ($\lambda=0.0$). **Ceiling Effect Warning**: Because baseline discrimination approaches $0.99$, performance equivalence at $K \ge 5$ is weakly informative; extreme sparsity tracks ($K \in \{2, 3\}$) are evaluated separately to test whether DODA preserves discrimination under severe feature constraints.
 - **Missing Values**: 0 (Complete dataset)
+- **Biomarker Sanity Verification**: Malignant tumors (1) exhibit extreme enlargement and atypia across `worst_concave_points` (0.182 vs 0.074, $>2.4\times$), `worst_perimeter` (141.4 vs 87.0 mm), and `mean_radius` (17.46 vs 12.15 mm). Verified by `tests/test_dataset_sanity.py`.
 
 ---
 

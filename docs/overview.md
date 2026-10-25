@@ -1,4 +1,4 @@
-﻿# DODA Methodology & Experimental Architecture Overview
+# DODA Methodology & Experimental Architecture Overview
 
 This document provides a comprehensive reference of the experimental methodology, mathematical formulations, clinical cohorts, evaluation metrics, statistical testing protocols, and execution tracks for the DODA (Domain-Oriented Dual-stage Alignment) research framework.
 
@@ -28,11 +28,11 @@ DODA is evaluated across four clinical datasets spanning distinct data dimension
 - **Characteristics**: Highly collinear, continuous morphological measurements across mean, standard error, and extreme ("worst") nuclear values.
 
 ### 1.4 Chronic Kidney Disease (CKD)
-- **Dimensions**: $N = 988$ samples, $P = 24$ features.
-- **Binary Target**: `Class` (0 = no chronic kidney disease, 1 = chronic kidney disease).
-- **Clinical Setting**: Inpatient hospital laboratory panel and bedside vitals record.
+- **Dimensions**: $N = 400$ samples, $P = 24$ features.
+- **Binary Target**: `class` (0 = notckd, 1 = ckd; ~62.5% positive prevalence).
+- **Clinical Setting**: Apollo Hospitals (Karaikudi, Tamil Nadu, India) laboratory and inpatient panel.
 - **Guideline Basis**: KDIGO (Kidney Disease: Improving Global Outcomes) Clinical Practice Guidelines. Prioritizes diagnostic serum filtration markers: serum creatinine (`sc`), albuminuria (`al`), blood urea (`bu`), hemoglobin (`hemo`), and specific gravity (`sg`).
-- **Characteristics**: Contains mixed numeric and categorical variables, missingness requiring median/mode imputation, and high laboratory noise.
+- **Characteristics**: Canonical UCI benchmark with confirmed clinical separation across primary biomarkers. Missing values are imputed strictly in-fold.
 
 ---
 
@@ -135,11 +135,11 @@ To ensure conclusions are methodologically sound and guard against false positiv
 
 ### Track 1: Primary Safety Non-Inferiority Grid (RQ1)
 - **Objective**: Evaluates whether clinical weighting preserves predictive performance within non-inferiority margin $\epsilon = 0.02$ across 50 folds.
-- **Grid**: Systematic sweep across all valid $K$ values, $\lambda \in \{0.0, 0.25, 0.50, 0.75, 1.0\}$, selectors, and classifiers across 50 folds.
+- **Grid**: Systematic sweep across all 4 eligible cohorts (Heart Disease, WDBC, Canonical UCI CKD, Diabetes) evaluating all 5 selectors (ANOVA, LASSO, Random Forest, mRMR, Boruta), 3 classifiers (Logistic Regression, Random Forest, XGBoost), 4 Top-$K$ budgets, 5 lambdas ($\lambda \in \{0.0, 0.25, 0.50, 0.75, 1.0\}$), and 2 fusion methods (Hadamard, RRF) across 50 folds ($30,000$ evaluations per dataset, $120,000$ total evaluations).
 
 ### Track 2: Clinical Controllability & Pareto Curve (RQ2)
 - **Objective**: Evaluates the descriptive trade-off curve between clinical guideline alignment ($\rho$) and predictive accuracy (ROC-AUC).
-- **Protocol**: Traces alignment growth across $\lambda$ sweeps and identifies operational default $\lambda^*$ via inner CV splits.
+- **Protocol**: Traces alignment growth across a prespecified fixed descriptive grid $\lambda \in \{0.0, 0.25, 0.50, 0.75, 1.0\}$. Inner nested CV on training splits is recognized as a potential prospective deployment workflow for selecting an operational default $\lambda^*$, while empirical results report the full descriptive Pareto frontier.
 
 ### Track 3: Negative Controls Specificity Grid (RQ3)
 - **Objective**: Replaces authentic guideline weights with 4 control profiles to prove steering is driven by authentic medical evidence rather than random regularization:

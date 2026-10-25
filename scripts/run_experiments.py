@@ -71,6 +71,8 @@ def run_experiment(
     dataset_cfg_path: str,
     n_splits: int = 5,
     n_repeats: int = 10,  # Standard 5x10 Repeated Stratified K-Fold
+    start_repeat: int = 1,
+    end_repeat: Optional[int] = None,
     selectors: List[str] = None,
     fusion_methods: List[str] = None,
     lambdas: List[float] = None,
@@ -87,11 +89,12 @@ def run_experiment(
     target_col = cfg["target"]
     top_k_list = cfg.get("top_k", [5, 10, 15, 20])
     feature_names = cfg["features"]
+    end_rep = end_repeat or n_repeats
 
-    selectors = selectors or ["anova", "lasso", "random_forest"]
+    selectors = selectors or ["anova", "lasso", "random_forest", "mrmr", "boruta"]
     fusion_methods = fusion_methods or ["hadamard", "rrf"]
     lambdas = lambdas if lambdas is not None else [0.0, 0.25, 0.5, 0.75, 1.0]
-    classifiers = classifiers or ["logreg", "random_forest"]
+    classifiers = classifiers or ["logreg", "random_forest", "xgboost"]
 
     print(f"Loading data from {data_path}...")
     df = pd.read_parquet(data_path)
@@ -124,6 +127,16 @@ def run_experiment(
         split_num = fold_idx % n_splits + 1
         fold_idx += 1
 
+        if repeat_num < start_repeat or repeat_num > end_rep:
+            continue
+
+        out_path = Path(out_dir)
+        checkpoint_file = out_path / f"repeat_{repeat_num}.parquet"
+        if checkpoint_file.exists():
+            if fold_idx % n_splits == 0:
+                print(f"Skipping repeat {repeat_num}/{n_repeats} (already completed and cached in {checkpoint_file.name})")
+            continue
+
         X_train, X_test = X.iloc[train_idx].copy(), X.iloc[test_idx].copy()
         y_train, y_test = y.iloc[train_idx].copy(), y.iloc[test_idx].copy()
 
@@ -138,7 +151,10 @@ def run_experiment(
 
         # Iterate over selectors
         for sel_name in selectors:
-            selector = make_selector(sel_name, random_state=seed)
+            if sel_name == "anova":
+                selector = make_selector(sel_name)
+            else:
+                selector = make_selector(sel_name, random_state=seed)
             selector.fit(X_train_norm, y_train)
             raw_scores = selector.raw_math_scores_
 
@@ -191,15 +207,29 @@ def run_experiment(
         if fold_idx % n_splits == 0:
             elapsed = time.time() - start_time
             print(f"Completed repeat {repeat_num}/{n_repeats} ({elapsed:.1f}s elapsed)")
+            # Save checkpoint per completed repeat
+            out_path = Path(out_dir)
+            out_path.mkdir(parents=True, exist_ok=True)
+            checkpoint_file = out_path / f"repeat_{repeat_num}.parquet"
+            pd.DataFrame(results).to_parquet(checkpoint_file, index=False)
+            results = []
 
-    results_df = pd.DataFrame(results)
+    # Final consolidation of all repeat checkpoints
     out_path = Path(out_dir)
     out_path.mkdir(parents=True, exist_ok=True)
+    chk_files = sorted(out_path.glob("repeat_*.parquet"))
+    if chk_files:
+        results_df = pd.concat([pd.read_parquet(f) for f in chk_files], ignore_index=True)
+    elif results:
+        results_df = pd.DataFrame(results)
+    else:
+        results_df = pd.DataFrame()
+
     parquet_file = out_path / "runs.parquet"
     csv_file = out_path / "runs.csv"
-
-    results_df.to_parquet(parquet_file, index=False)
-    results_df.to_csv(csv_file, index=False)
+    if not results_df.empty:
+        results_df.to_parquet(parquet_file, index=False)
+        results_df.to_csv(csv_file, index=False)
     print(f"Saved {len(results_df)} run evaluations to {parquet_file} and {csv_file}")
     return results_df
 
@@ -209,6 +239,8 @@ if __name__ == "__main__":
     parser.add_argument("--dataset", default="configs/datasets/diabetes.yaml", help="Path to dataset config")
     parser.add_argument("--splits", type=int, default=5, help="Number of folds")
     parser.add_argument("--repeats", type=int, default=10, help="Number of repeats (standard 10 for 5x10 CV)")
+    parser.add_argument("--start-repeat", type=int, default=1, help="First repeat to run (1-indexed)")
+    parser.add_argument("--end-repeat", type=int, default=None, help="Last repeat to run (inclusive)")
     parser.add_argument("--out", default="results/diabetes", help="Output directory")
     parser.add_argument("--sample", type=int, default=None, help="Sample size override")
 
@@ -217,6 +249,8 @@ if __name__ == "__main__":
         dataset_cfg_path=args.dataset,
         n_splits=args.splits,
         n_repeats=args.repeats,
+        start_repeat=args.start_repeat,
+        end_repeat=args.end_repeat,
         out_dir=args.out,
         sample_size=args.sample,
     )

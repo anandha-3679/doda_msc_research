@@ -4,6 +4,7 @@ from .selectors import (
     LASSOSelector,
     RandomForestSelector,
     MRMRSelector,
+    BorutaSelector,
     make_selector,
 )
 
@@ -13,5 +14,7 @@ __all__ = [
     "LASSOSelector",
     "RandomForestSelector",
     "MRMRSelector",
+    "BorutaSelector",
     "make_selector",
 ]
+

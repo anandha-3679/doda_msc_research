@@ -26,9 +26,11 @@ DODA (Decoupled Operator-Driven Architecture) is a selector-agnostic framework d
 - [x] Run full 5x10 repeated cross-validation grid (12,000 evaluations) on heartdisease
 - [x] Generate publication figures (F1-F5) and statistical equivalence tables for heartdisease
 - [x] Resolve dataset size and weight provenance inconsistencies across README and docs
-- [x] Update TOST analysis to record non-inferiority safety margin ($\Delta \ge -0.02$) and dataset-appropriate Nadeau-Bengio degrees of freedom
-- [ ] Onboard CKD dataset (`data/raw/ckd_raw.csv` and `configs/weights/ckd_weights.json`)
-- [x] Onboard Breast Cancer dataset (`data/raw/breast_cancer_raw` and `configs/weights/breast_cancer_weights.json`)
+- [x] Implement BorutaSelector class and integrate robust MRMRSelector in doda/selectors/selectors.py
+- [x] Add comprehensive selector unit and fold-leakage test suite in tests/test_selectors.py (30 tests passing)
+- [x] Verify 4 eligible primary datasets (Heart Disease, WDBC, Canonical UCI CKD, Diabetes) and maintain quarantine of synthetic BD-KDD
+- [x] Execute full 5-selector, 3-classifier, 4-dataset primary benchmark grid (120,000 total evaluations in results/grid_5sel_3clf/)
+- [x] Document protocol reconciliation (fixed descriptive lambda grid vs prospective deployment nested-CV) and update changelog
 - [ ] Run cross-dataset synthesis report
 
 ---

@@ -3,13 +3,16 @@
 ## Overview
 - **Dataset Name**: CDC Behavioral Risk Factor Surveillance System (BRFSS) - Diabetes Health Indicators
 - **Task**: Binary Classification (Diabetes or Prediabetes vs. No Diabetes)
-- **Primary Source**: Centers for Disease Control and Prevention (CDC) BRFSS Survey
+- **Primary Source**: Centers for Disease Control and Prevention (CDC) BRFSS Survey (via Kaggle `alexteb/diabetes-health-indicators-dataset`)
+- **Download URL**: https://www.kaggle.com/datasets/alexteb/diabetes-health-indicators-dataset (`diabetes_binary_health_indicators_BRFSS2015.csv`)
+- **Raw File SHA-256**: `40f8c1f3fddd48cef5b3c3511fa235d3c3cbc04f57d81508e562bd6da750c8f6`
 - **Samples (N)**: 253,680 total population rows; evaluated via a stratified subsample of $N=10,000$ (seed $42$) for cross-validation efficiency
 - **Features (D)**: 21 predictive features + 1 binary target
 - **Target Variable**: `diabetes_binary` (0: No diabetes, 1: Diabetes or Prediabetes)
 - **Class Balance**: 86.07% negative (0), 13.93% positive (1) (Class imbalance ratio: ~6.18:1)
 - **Baseline Performance**: ROC-AUC $\approx 0.7917$ ($\lambda=0.0$)
 - **Artifact Path**: `data/processed/diabetes_clean.parquet`
+- **Biomarker Sanity Verification**: Positive class (diabetes) exhibits clinically expected elevations in `high_bp` (75.3% vs 37.7%), `bmi` (31.9 vs 27.8 kg/m²), and worse `gen_hlth` (3.29 vs 2.39). Verified by `tests/test_dataset_sanity.py`.
 
 ## Feature Dictionary
 

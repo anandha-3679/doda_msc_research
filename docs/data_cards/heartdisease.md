@@ -3,11 +3,14 @@
 ## Dataset Overview
 - **Dataset Name**: UCI Heart Disease (Cleveland Database)
 - **Source**: UCI Machine Learning Repository / Cleveland Clinic Foundation (Detrano et al., 1989)
+- **Download URL**: https://archive.ics.uci.edu/static/public/45/heart+disease.zip (`processed.cleveland.data`)
+- **Raw File SHA-256**: `13f2c7cc1ebfc284ead179a49d04ef4935ede24cff35452bf19a8eb643c7a8af`
 - **Target Variable**: `target` (0 = no presence/diameter narrowing < 50%, 1 = presence/diameter narrowing $\ge$ 50%)
 - **Sample Size**: 303 patient records (note: small $N$ yields wider confidence intervals under Nadeau–Bengio correction; $\epsilon=0.01$ is underpowered)
 - **Number of Features**: 13 clinical, hemodynamic, and demographic features
 - **Class Balance**: 54.1% negative (0), 45.9% positive (1)
 - **Baseline Performance**: ROC-AUC $\approx 0.8699$ ($\lambda=0.0$)
+- **Biomarker Sanity Verification**: Heart disease class (1) shows substantial elevations in pathognomonic angiographic hallmarks `ca` (mean 1.14 vs 0.27 vessels), `oldpeak` (1.57 vs 0.59 mm ST depression), and typical angina `cp` (3.59 vs 2.79). Verified by `tests/test_dataset_sanity.py`.
 
 ---
 

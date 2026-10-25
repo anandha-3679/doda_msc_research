@@ -1,34 +1,34 @@
 {
-  "_meta": {
-    "dataset": "ckd",
-    "version": "1.0",
-    "source": "BD-KDD Chronic Kidney Disease / KDIGO Guidelines",
-    "default_weight": 1.0
-  },
-  "weights": {
-    "age": 0.55,
-    "bp": 0.8,
-    "sg": 0.85,
-    "al": 1.0,
-    "su": 0.55,
-    "rbc": 0.55,
-    "pc": 0.5,
-    "pcc": 0.4,
-    "ba": 0.4,
-    "bgr": 0.7,
-    "bu": 0.9,
-    "sc": 1.0,
-    "sod": 0.65,
-    "pot": 0.65,
-    "hemo": 0.75,
-    "pcv": 0.7,
-    "wbcc": 0.4,
-    "rbcc": 0.55,
-    "htn": 0.85,
-    "dm": 0.8,
-    "cad": 0.45,
-    "appet": 0.4,
-    "pe": 0.65,
-    "ane": 0.7
-  }
+    "_meta": {
+        "dataset": "ckd",
+        "version": "1.0",
+        "source": "KDIGO 2024 CKD Clinical Practice Guideline / NIDDK CKD Evaluation Guidance",
+        "default_weight": 1.0
+    },
+    "weights": {
+        "age": 0.7,
+        "bp": 0.9,
+        "sg": 0.9,
+        "al": 1.0,
+        "su": 0.6,
+        "rbc": 0.8,
+        "pc": 0.9,
+        "pcc": 0.7,
+        "ba": 0.5,
+        "bgr": 0.9,
+        "bu": 0.9,
+        "sc": 1.0,
+        "sod": 0.7,
+        "pot": 0.7,
+        "hemo": 0.8,
+        "pcv": 0.8,
+        "wbcc": 0.5,
+        "rbcc": 0.7,
+        "htn": 0.9,
+        "dm": 0.9,
+        "cad": 0.6,
+        "appet": 0.5,
+        "pe": 0.8,
+        "ane": 0.7
+    }
 }

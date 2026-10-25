@@ -1,9 +1,20 @@
-# Data Card: Chronic Kidney Disease (CKD)
+# Data Card: Chronic Kidney Disease (CKD) [STATUS: QUARANTINED]
+
+> [!CAUTION]
+> **DATA INTEGRITY AUDIT / QUARANTINE NOTICE**:
+> This dataset (`ckd_raw.csv`, $N=988$) originates from **BD-KDD: A Clinical Dataset of Kidney Disease Diagnosis** (Popular Diagnostic Center, Dhaka; Zenodo / BD-KDD), NOT the canonical 400-patient Apollo Hospitals / UCI CKD benchmark (Soundarapandian et al., 2015).
+> **Data Integrity Sanity Test Failed**: In this matrix, the primary KDIGO clinical hallmarks show near-zero difference between Class 0 (control) and Class 1 (disease):
+> - Serum Creatinine (`sc`): 7.41 mg/dL (Class 0) vs 7.65 mg/dL (Class 1) ($\Delta = +0.24$)
+> - Urine Albumin (`al`): 2.04 (Class 0) vs 2.03 (Class 1) ($\Delta = -0.01$)
+> As a consequence, machine learning models achieve near-random discrimination ($\approx 0.51$ ROC-AUC). All downstream experimental artifacts have been isolated into `data/quarantine/` and removed from active protocol synthesis.
 
 ## Dataset Overview
-- **Dataset Name**: Chronic Kidney Disease (CKD) Database
-- **Source**: UCI Machine Learning Repository / Apollo Hospitals (Soundarapandian et al., 2015) / BD-KDD
-- **Target Variable**: `class` (0 = non-CKD / control, 1 = CKD)
+- **Dataset Name**: BD-KDD Kidney Disease Diagnosis Dataset (commonly misattributed as UCI CKD 988-row variant)
+- **Source**: BD-KDD / Zenodo (Popular Diagnostic Center, Savar, Dhaka, Bangladesh)
+- **Download URL**: https://zenodo.org/records/BD-KDD (`BD-KDD.csv`)
+- **Raw File SHA-256**: `cb9d92f77f20859edaf73ba9236d8fed814e854016ab2eaf83e13ddba45bfaeb`
+- **Quarantined Artifact Path**: `data/quarantine/ckd_raw.csv`, `data/quarantine/ckd_clean.parquet`
+- **Target Variable**: `class` / `Class` (0 = non-CKD / control, 1 = CKD)
 - **Sample Size**: 988 patient records ($N = 988$)
 - **Number of Features**: 24 clinical, laboratory, and demographic features
 - **Class Balance**: 48.7% control (0), 51.3% CKD (1)

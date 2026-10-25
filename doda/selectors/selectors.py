@@ -122,6 +122,71 @@ class MRMRSelector(BaseSelector):
         return self
 
 
+class BorutaSelector(BaseSelector):
+    """
+    Boruta-inspired feature selector.
+    Generates shadow (permuted) features, fits Random Forest, and measures the
+    relative importance of actual features versus maximal shadow feature importance.
+    Assigns continuous positive importance scores to self.raw_math_scores_.
+    """
+    def __init__(
+        self,
+        top_k: Optional[int] = None,
+        n_estimators: int = 50,
+        max_iter: int = 15,
+        random_state: int = 42,
+    ):
+        super().__init__(top_k=top_k)
+        self.n_estimators = n_estimators
+        self.max_iter = max_iter
+        self.random_state = random_state
+
+    def fit(self, X: pd.DataFrame, y: pd.Series) -> "BorutaSelector":
+        self.feature_names_ = list(X.columns)
+        n_features = len(self.feature_names_)
+        hits = np.zeros(n_features, dtype=float)
+        total_importance = np.zeros(n_features, dtype=float)
+        rng = np.random.default_rng(self.random_state)
+
+        for iteration in range(self.max_iter):
+            # Create shadow features by shuffling each column
+            X_shadow = X.copy()
+            for col in X_shadow.columns:
+                X_shadow[col] = rng.permutation(X_shadow[col].values)
+            X_shadow.columns = [f"shadow_{c}" for c in self.feature_names_]
+
+            # Combine real and shadow features
+            X_combined = pd.concat([X, X_shadow], axis=1)
+
+            # Fit Random Forest on combined dataset
+            iter_seed = int(self.random_state + iteration * 100)
+            rf = RandomForestClassifier(
+                n_estimators=self.n_estimators,
+                max_depth=5,
+                random_state=iter_seed,
+                n_jobs=-1,
+            )
+            rf.fit(X_combined, y)
+
+            importances = rf.feature_importances_
+            real_imp = importances[:n_features]
+            shadow_imp = importances[n_features:]
+
+            max_shadow = np.max(shadow_imp) if len(shadow_imp) > 0 else 0.0
+            hits += (real_imp > max_shadow).astype(float)
+            total_importance += np.maximum(real_imp - max_shadow, 0.0) + real_imp
+
+        # Final mathematical score: combination of hits and cumulative excess importance
+        # Ensure scores are strictly non-negative and finite
+        scores = hits + total_importance
+        scores = np.nan_to_num(scores, nan=0.0, posinf=0.0, neginf=0.0)
+        # Shift slightly so min score is positive for normalization
+        scores = scores - scores.min() + 1e-4
+
+        self.raw_math_scores_ = pd.Series(scores, index=self.feature_names_)
+        return self
+
+
 def make_selector(name: str, top_k: Optional[int] = None, **kwargs) -> BaseSelector:
     name_clean = name.lower().replace("-", "_")
     if name_clean == "anova":
@@ -132,5 +197,9 @@ def make_selector(name: str, top_k: Optional[int] = None, **kwargs) -> BaseSelec
         return RandomForestSelector(top_k=top_k, **kwargs)
     elif name_clean == "mrmr":
         return MRMRSelector(top_k=top_k, **kwargs)
+    elif name_clean == "boruta":
+        return BorutaSelector(top_k=top_k, **kwargs)
     else:
-        raise ValueError(f"Unknown selector '{name}'. Supported: anova, lasso, random_forest, mrmr.")
+        raise ValueError(
+            f"Unknown selector '{name}'. Supported: anova, lasso, random_forest, mrmr, boruta."
+        )

@@ -1,6 +1,15 @@
 # Generic Dataset Experiment Pipeline & Protocol
 
-A standardized, leak-free experimental pipeline template for evaluating **DODA** across any tabular medical dataset. Every stage is identical across datasets except for the static preprocessing step (Step 1).
+A standardized, leak-free experimental pipeline template for evaluating **DODA** across all four eligible medical datasets (Heart Disease, WDBC, UCI CKD, and Diabetes). Every stage is identical across datasets except for the static preprocessing step (Step 1).
+
+### Mandatory Primary Evaluation Specification
+Across all 4 primary datasets, the identical full experimental grid evaluates:
+- **5 Feature Selectors**: ANOVA, LASSO, Random Forest, mRMR, and Boruta.
+- **3 Downstream Predictive Models / Classifiers**: Logistic Regression (`logreg`), Random Forest (`random_forest`), and XGBoost (`xgboost`).
+- **4 Top-$K$ Feature Budgets**: 4 dataset-appropriate Top-$K$ settings (e.g. $[3, 5, 8, 10]$ for Heart Disease; $[5, 10, 15, 20]$ for WDBC, CKD, Diabetes).
+- **5 Lambda Values**: Prespecified fixed descriptive grid $\lambda \in \{0.0, 0.25, 0.50, 0.75, 1.0\}$.
+- **2 Fusion Operators**: Hadamard multiplication and Reciprocal Rank Fusion (RRF).
+- **Evaluation Engine**: 5 splits $\times$ 10 repeats = 50 folds Repeated Stratified K-Fold CV.
 
 ---
 
@@ -11,18 +20,18 @@ flowchart TD
     Raw[Raw Dataset: data/raw/<dataset>_raw.csv] --> Preproc[1. Dataset-Specific Static Preprocessing]
     Preproc --> Clean[Clean Matrix: data/processed/<dataset>_clean.parquet]
     
-    Clean --> CVLoop[2. Repeated Stratified K-Fold CV (5x10)]
+    Clean --> CVLoop[2. Repeated Stratified K-Fold CV (5x10 = 50 folds)]
     Weights[Frozen Weights: configs/weights/<dataset>_weights.json] --> CVLoop
 
-    subgraph Fold Execution (Inside Training Fold Only)
+    subgraph Fold Execution (Strictly Inside Training Fold Only)
         TrainX[Train Split X, y] --> InFoldPreproc[Imputation & Scaling fit on Train]
-        InFoldPreproc --> Sel[Selectors: ANOVA / LASSO / mRMR / RF / Boruta]
+        InFoldPreproc --> Sel[5 Selectors: ANOVA / LASSO / Random Forest / mRMR / Boruta]
         Sel --> RawScores[Raw Math Scores S_raw]
         RawScores --> Norm[Min-Max Normalization to [0,1]]
-        Norm --> Fusion[Fusion Layer: Hadamard / RRF with λ in [0, 1]]
+        Norm --> Fusion[Fusion Layer: Hadamard / RRF with 5 Lambdas in 0.0 to 1.0]
         Weights --> Fusion
-        Fusion --> Ranked[Ranked Features & Top-K Subset Selection]
-        Ranked --> Classifiers[Train Classifiers: LogReg / RF / XGBoost]
+        Fusion --> Ranked[Ranked Features & 4 Top-K Subsets Selection]
+        Ranked --> Classifiers[Train 3 Models: LogReg / RF / XGBoost]
     end
 
     Classifiers --> TestEval[Evaluate on Test Split Fold]
@@ -84,7 +93,7 @@ For each repeat $r \in [1, 10]$ and fold $k \in [1, 5]$ (Repeated Stratified K-F
    - **Hadamard**: $S_{\text{final}}(j) = S_{\text{norm}}(j) \cdot w(j)^\lambda$
    - **Reciprocal Rank Fusion (RRF)**: $RRF(j) = \frac{1}{60 + r_{\text{math}}(j)} + \frac{\lambda}{60 + r_{\text{clin}}(j)}$
    - Sweep $\lambda \in [0.0, 0.25, 0.50, 0.75, 1.0]$ to trace the Pareto trade-off frontier.
-   - *Note on Default $\lambda^*$*: Any recommended operational default $\lambda^*$ must be selected via inner nested CV on $X_{\text{train}}$, never by inspecting test fold results.
+   - *Note on Prespecified Fixed Grid vs. Default $\lambda^*$*: In the research evaluation protocol, all models are evaluated across a prespecified fixed descriptive grid $\lambda \in [0.0, 0.25, 0.50, 0.75, 1.0]$ to fully characterize the empirical Pareto frontier. Inner nested cross-validation on $X_{\text{train}}$ (e.g., selecting the largest $\lambda$ preserving non-inferiority on train validation splits) represents a recommended prospective clinical deployment workflow for automated pipeline configuration, rather than an implemented evaluation result in the benchmark grid.
 6. **Top-$K$ Subset**:
    - Extract Top-$K$ columns from $X_{\text{train}}$ and apply the same mask to $X_{\text{test}}$.
 7. **Downstream Classification**:
