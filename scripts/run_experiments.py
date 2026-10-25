@@ -13,8 +13,17 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
+import hashlib
 from typing import Dict, List, Optional
 import numpy as np
+
+
+def compute_file_sha256(filepath: Path) -> str:
+    hasher = hashlib.sha256()
+    with open(filepath, "rb") as f:
+        while chunk := f.read(65536):
+            hasher.update(chunk)
+    return hasher.hexdigest()
 import pandas as pd
 import yaml
 from scipy.stats import spearmanr
@@ -128,7 +137,9 @@ def run_experiment(
         "dataset_name": cfg["name"],
         "dataset_cfg_path": str(dataset_cfg_path),
         "data_path": str(data_path),
+        "data_sha256": compute_file_sha256(Path(data_path)),
         "weights_path": str(weights_path),
+        "weights_sha256": compute_file_sha256(Path(weights_path)),
         "n_splits": int(n_splits),
         "n_repeats": int(n_repeats),
         "selectors": sorted(selectors),

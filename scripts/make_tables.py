@@ -80,7 +80,7 @@ def analyze_results(results_path: str = "results/diabetes/runs.parquet", out_dir
                             elif "cancer" in dataset_name.lower() or "breast" in dataset_name.lower():
                                 n_tr, n_te = 455, 114
                             elif "ckd" in dataset_name.lower():
-                                n_tr, n_te = 790, 198
+                                n_tr, n_te = 320, 80
                             else:
                                 n_tr, n_te = 800, 200
 
