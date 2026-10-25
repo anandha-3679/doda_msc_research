@@ -48,7 +48,7 @@ flowchart TD
 ### 1.1 Prevention of Information Leakage
 - **Strict In-Fold Preprocessing**: `SimpleImputer` (median) and `StandardScaler` are fitted exclusively on the training split within each fold and applied to the test split.
 - **In-Fold Feature Selection**: Mathematical selectors compute raw scores $S_{\text{raw}}$ using training data only.
-- **Pre-declared Clinical Weights**: Weight files are fixed prior to experiments and documented in `configs/weights/provenance.csv` with primary guideline citations (WHO/ADA, AHA/ACC, KDIGO) and author-assigned weights from published diagnostic literature for WDBC.
+- **Pre-declared Clinical Weights**: Weight files were fixed prior to experiments (see changelog for post-hoc changes) and documented in `configs/weights/provenance.csv` with primary guideline citations (WHO/ADA, AHA/ACC, KDIGO) and author-assigned weights from published diagnostic literature for WDBC.
 
 
 ---
@@ -283,7 +283,7 @@ Comparing findings across the four cohorts reveals fundamental properties of cli
 
 ### 8.3 Recommended Deployment Policy
 Based on the synthesized 120,000 evaluations:
-- **Default Operator**: Hadamard continuous fusion ($\lambda = 1.0$) is superior to RRF across all cohorts, exhibiting no rank fragmentation.
+- **Default Operator**: Hadamard continuous fusion ($\lambda = 1.0$) performed better in our experiments than RRF across all cohorts, exhibiting no rank fragmentation.
 - **Minimum Budget**: Set $K \ge 5$ (or $K \ge 0.25 \cdot P$) to preserve predictive safety margins under tree-based downstream models.
 ### 8.4 Methodological Limitation: Circularity of Alignment Metrics (RQ2)
 A critical methodological distinction must be drawn when interpreting the alignment results for RQ2:

@@ -97,7 +97,7 @@ Feature-selection stability and weight-jitter sensitivity ($\pm 10\%, \pm 20\%$)
 - **H0₂:** Ranking alignment with clinical guidelines under DODA equals that of the baseline ($\lambda=0$).
   **H1₂:** DODA increases alignment with clinical guidelines along a predictable, monotonic Pareto frontier across the prespecified $\lambda$ grid.
 - **H0₃:** DODA's clinical alignment and performance are no different from random or permuted weights.
-  **H1₃:** Real guideline weights yield significantly higher clinical alignment ($\rho$, guideline feature share) than permuted or random weights at equivalent performance.
+  **H1₃:** Real guideline weights yield higher clinical alignment ($\rho$, guideline feature share) than permuted or random weights at equivalent performance (tested via rank correlation differences and feature overlap).
 - **H0₄:** Hadamard and RRF produce equivalent rankings and performance.
   **H1₄:** They differ in ranking composition and/or performance.
 
@@ -112,16 +112,16 @@ All updates driven by review feedback are formally logged in [`docs/protocol_cha
    - **Heart Disease ($N=303$)**: **85.83%** Non-Inferiority (412/480 pass; 55 of 68 failures have empirical $\Delta \ge 0$ with wide finite-sample CIs).
    - **Breast Cancer ($N=569$)**: **100.00%** Non-Inferiority (480/480 pass, subject to ceiling effect disclosure).
    - **Canonical UCI CKD ($N=400$)**: **100.00%** Non-Inferiority (480/480 pass, subject to ceiling effect disclosure).
-   *(Note: The pre-specified Primary Endpoint—Hadamard, $\lambda=1.0$, Logistic Regression, default $K$—is **100% non-inferior** across all 5 selectors on all 4 cohorts.)*
+   *(Plainly stated: DODA never failed badly on 3 of the 4 cohorts—achieving 99.38% to 100.00% non-inferiority on Diabetes, Breast Cancer, and CKD. The pre-specified Primary Endpoint—Hadamard, $\lambda=1.0$, Logistic Regression, default $K$—is **100% non-inferior** across all 5 selectors on all 4 cohorts.)*
 
 2. **Negative Controls Grid (RQ3)**: Executed across all cohorts in `results/negative_controls/`:
-   - *Permuted & Random Weights*: Confirmed that scrambling or randomizing weights drops Spearman correlation with guidelines ($\rho$ drops from $0.72$ to $0.22 - 0.33$ on Diabetes), demonstrating domain-specific steering.
+   - *Permuted & Random Weights*: Confirmed that scrambling or randomizing weights drops Spearman correlation with guidelines ($\rho$ drops from $0.72$ to $0.22 - 0.33$ on Diabetes), consistent with domain-specific steering.
    - *Neutral Weights (all 1.0)*: Validated that neutral weights reproduce baseline rankings with 100.0% Jaccard identity.
    - *Inverted Weights ($1 - w$)*: Suppresses guideline hallmarks, causing negative rank correlation ($\rho = -0.23$ to $-0.77$ on Breast Cancer/Diabetes/Heart Disease).
 3. **Weight-Jitter Sensitivity**: Evaluated across 100 random draws per noise level ($\pm 10\%, \pm 20\%$) in `results/sensitivity/`:
-   - Top-$K$ Jaccard stability stays at **$92.0\% - 98.2\%$** across all primary datasets, proving DODA is robust to semi-quantitative weight perturbation. Reported via Jaccard stability vs unjittered reference ($J \equiv 1.0000$).
+   - Top-$K$ Jaccard stability stays at **$92.0\% - 98.2\%$** across all primary datasets, which indicates the selected features are stable under $\pm 10–20\%$ weight noise. Reported via Jaccard stability vs unjittered reference ($J \equiv 1.0000$).
 4. **WDBC Ceiling-Effect & Small-$K$ Track**: Evaluated extreme feature sparsity ($K \in \{2, 3\}$) in `results/breast_cancer_small_k/`:
-   - At $K=2$, DODA achieves ROC-AUC **$0.9708$** vs baseline **$0.9675$**. At $K=3$, DODA achieves **$0.9765$** vs baseline **$0.9740$**, proving that clinical prioritization preserves and slightly enhances discrimination under severe feature constraints.
+   - At $K=2$, DODA achieves ROC-AUC **$0.9708$** vs baseline **$0.9675$**. At $K=3$, DODA achieves **$0.9765$** vs baseline **$0.9740$**. DODA’s AUC was similar to baseline ($0.9708$ vs $0.9675$ at $K=2$); the difference was not tested.
 5. **Selector-Specific Comparators (RQ3)**: Evaluated in `results/comparators/`:
    - DODA matches or exceeds the discrimination of Penalty-Factor LASSO and Prior-Weighted mRMR, while selecting **$+4.5\%$ to $+28.3\%$ more guideline-backed features** on the Pareto frontier.
 
@@ -263,7 +263,7 @@ The primary protocol hypothesis tests one-sided directional non-inferiority on p
  
 - **Primary Hypothesis (Non-Inferiority):**
   $$H_0: \Delta \le -\epsilon \quad \text{vs.} \quad H_1: \Delta > -\epsilon$$
-  Rejection of $H_0$ at significance level $\alpha = 0.05$ demonstrates that clinical weighting does not degrade predictive discrimination beyond the pre-declared safety margin $\epsilon = 0.02$.
+  Rejection of $H_0$ at significance level $\alpha = 0.05$ demonstrates that clinical weighting does not degrade predictive discrimination within $\epsilon = 0.02$, on these four datasets.
   Equivalently, the lower bound of the **95% one-sided confidence interval** (or 90% two-sided CI) satisfies:
   $$\text{CI}_{\text{lower}} \ge -\epsilon$$
 
