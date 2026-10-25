@@ -7,6 +7,7 @@ __pycache__/
 build/
 dist/
 results/
+*.tar.gz
 .pytest_cache/
 .ruff_cache/
 

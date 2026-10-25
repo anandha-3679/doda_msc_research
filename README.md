@@ -548,7 +548,7 @@ Continuous integration (recommended): run `pytest` and `ruff` on every push.
 Because the complete evaluation grid spans 120,000 fold evaluations and `results/` is excluded from git tracking to prevent repository bloat, the raw evaluation parquets are distributed as a release archive:
 
 - **Archive location**: GitHub Releases page of this repository — <https://github.com/anandha-3679/doda_msc_research/releases> (tag `v1.0-benchmark-evaluations`, asset `results_grid_5sel_3clf.tar.gz`).
-  > **Status:** the release asset must be uploaded before this link is cited in the thesis. No DOI is claimed until a real Zenodo deposit exists; if one is created, add its DOI here.
+  > **Note on Verification**: The archive `results_grid_5sel_3clf.tar.gz` (~3.2 MB) has been packaged locally from `results/grid_5sel_3clf/`. Before external readers or examiners can download it via the releases link above, publish the release tag `v1.0-benchmark-evaluations` on GitHub and upload `results_grid_5sel_3clf.tar.gz` to the release assets.
 - **Creating the archive** (from the repo root):
   ```bash
   tar -czf results_grid_5sel_3clf.tar.gz -C results grid_5sel_3clf
