@@ -112,12 +112,13 @@ All model evaluations record a multidimensional battery of metrics across three 
 To ensure conclusions are methodologically sound and guard against false positives, the following statistical protocols are enforced:
 
 1. **$5 \times 10$ Repeated Stratified Cross-Validation**:
-   - Every dataset is partitioned across 5 distinct random seeds, each undergoing 10-fold stratified cross-validation (50 independent folds per dataset).
+   - Every dataset is evaluated with `RepeatedStratifiedKFold(n_splits=5, n_repeats=10)` under a single protocol seed: 10 repeats of 5-fold stratified cross-validation (50 folds per dataset; each fold uses ~80% for training and ~20% for testing). Folds overlap across repeats, so they are not independent — hence the variance correction below.
    - All scaling, imputations, and feature selections are performed strictly in-fold to eliminate data leakage.
 2. **Nadeau–Bengio Resampled $t$-Test Correction**:
    - Standard $t$-tests underestimate variance in cross-validation because training sets overlap. The standard error of paired differences $\Delta = \text{AUC}_{\text{DODA}} - \text{AUC}_{\text{base}}$ is corrected using:
-     $$SE_{\text{corrected}} = \sqrt{\left(\frac{1}{K} + \frac{n_{\text{test}}}{n_{\text{train}}}\right) S^2}$$
-     where $K=50$, $n_{\text{test}}/n_{\text{train}} = 1/9$.
+     $$SE_{\text{corrected}} = \sqrt{\left(\frac{1}{J} + \frac{n_{\text{test}}}{n_{\text{train}}}\right) S^2}$$
+     where $J=50$ folds and $n_{\text{test}}/n_{\text{train}} = 1/4$ (5-fold splits).
+
 3. **Formal Non-Inferiority Testing (RQ1)**:
    - DODA is evaluated against a pre-specified non-inferiority margin $\epsilon = 0.02$ (secondary $\epsilon = 0.01$).
    - Non-inferiority is formally established if the lower bound of the 95% one-sided confidence interval for $\Delta$ exceeds $-\epsilon$:

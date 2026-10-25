@@ -545,10 +545,16 @@ Continuous integration (recommended): run `pytest` and `ruff` on every push.
 
 ### Data & Results Availability (Archival Release)
 
-Because the complete evaluation grid spans 120,000 fold evaluations (~15 MB of compressed parquet records) and is excluded from git tracking to prevent repository bloat, all raw evaluation parquets are published in the accompanying research archive:
+Because the complete evaluation grid spans 120,000 fold evaluations and `results/` is excluded from git tracking to prevent repository bloat, the raw evaluation parquets are distributed as a release archive:
 
-- **GitHub Release / Zenodo DOI**: [https://doi.org/10.5281/zenodo.14920268](https://doi.org/10.5281/zenodo.14920268) *(or GitHub Release `v1.0-benchmark-evaluations`)*
-- **Archive Assets**: `results_grid_5sel_3clf.tar.gz` (contains `diabetes/runs.parquet`, `heartdisease/runs.parquet`, `breast_cancer/runs.parquet`, `ckd_uci/runs.parquet`).
+- **Archive location**: GitHub Releases page of this repository — <https://github.com/anandha-3679/doda_msc_research/releases> (tag `v1.0-benchmark-evaluations`, asset `results_grid_5sel_3clf.tar.gz`).
+  > **Status:** the release asset must be uploaded before this link is cited in the thesis. No DOI is claimed until a real Zenodo deposit exists; if one is created, add its DOI here.
+- **Creating the archive** (from the repo root):
+  ```bash
+  tar -czf results_grid_5sel_3clf.tar.gz -C results grid_5sel_3clf
+  ```
+- **Archive Assets**: `results_grid_5sel_3clf.tar.gz` (contains `grid_5sel_3clf/{diabetes,heartdisease,breast_cancer,ckd_uci}/runs.parquet`).
+
 - **One-Command Reproduction**: To unpack and regenerate all paper tables and publication figures from the archive:
   ```bash
   # 1. Unpack parquets into results/
