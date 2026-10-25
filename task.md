@@ -31,7 +31,8 @@ DODA (Decoupled Operator-Driven Architecture) is a selector-agnostic framework d
 - [x] Verify 4 eligible primary datasets (Heart Disease, WDBC, Canonical UCI CKD, Diabetes) and maintain quarantine of synthetic BD-KDD
 - [x] Execute full 5-selector, 3-classifier, 4-dataset primary benchmark grid (120,000 total evaluations in results/grid_5sel_3clf/)
 - [x] Document protocol reconciliation (fixed descriptive lambda grid vs prospective deployment nested-CV) and update changelog
-- [ ] Run cross-dataset synthesis report
+- [x] Run cross-dataset synthesis report
+
 
 ---
 

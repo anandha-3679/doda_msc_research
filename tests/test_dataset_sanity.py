@@ -132,10 +132,15 @@ def test_quarantine_pipeline_isolation():
     assert quarantined_raw.exists(), "ckd_raw.csv must be safely preserved in data/quarantine/"
     
     with open(quarantined_raw, "rb") as f:
-        sha256_hash = hashlib.sha256(f.read()).hexdigest()
+        raw_bytes = f.read()
+    # Normalize line endings to LF to prevent git autocrlf checkout variations across OSes
+    normalized_bytes = raw_bytes.replace(b"\r\n", b"\n")
+    sha256_hash = hashlib.sha256(normalized_bytes).hexdigest()
     
-    expected_hash = "cb9d92f77f20859edaf73ba9236d8fed814e854016ab2eaf83e13ddba45bfaeb"
-    assert sha256_hash == expected_hash, f"Quarantined raw SHA-256 mismatch: {sha256_hash}"
+    # Expected hash of LF-normalized byte content (raw CRLF: cb9d92f7..., normalized LF: 67911973...)
+    expected_hash_lf = "67911973097e9c719986aa4d793eb4f17a47e148aa58e9dbef83cd0390748165"
+    assert sha256_hash == expected_hash_lf, f"Quarantined raw SHA-256 mismatch: {sha256_hash}"
+
 
     # 4. Quarantined config exists
     quarantined_cfg = ROOT_DIR / "data/quarantine/ckd.yaml"

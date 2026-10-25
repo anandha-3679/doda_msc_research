@@ -28,11 +28,16 @@ class BaseSelector(ABC):
         pass
 
     def get_support(self, k: Optional[int] = None) -> List[str]:
-        """Return Top-K feature names based on raw mathematical scores."""
+        """Return Top-K feature names based on raw mathematical scores, with deterministic tie-breaking."""
         if self.raw_math_scores_ is None:
             raise ValueError("Selector must be fitted before calling get_support()")
         k_val = k or self.top_k or len(self.raw_math_scores_)
-        return list(self.raw_math_scores_.sort_values(ascending=False).head(k_val).index)
+        df = pd.DataFrame(
+            {"score": self.raw_math_scores_.values, "name": [str(x) for x in self.raw_math_scores_.index]},
+            index=self.raw_math_scores_.index,
+        )
+        df_sorted = df.sort_values(by=["score", "name"], ascending=[False, True])
+        return list(df_sorted.index[:k_val])
 
     def transform(self, X: pd.DataFrame, k: Optional[int] = None) -> pd.DataFrame:
         """Select Top-K columns from X."""

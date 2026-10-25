@@ -1,0 +1,14 @@
+# Set default behavior, in case users don't have core.autocrlf set.
+* text=auto eol=lf
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout, with LF in the repository:
+*.py text eol=lf
+*.csv text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.toml text eol=lf
+
+# Raw quarantine files must preserve LF
+data/quarantine/* text eol=lf

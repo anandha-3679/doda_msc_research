@@ -17,8 +17,34 @@ class FusedResult:
         self.ranks = ranks
 
     def top_k(self, k: int) -> List[str]:
-        """Return Top-K feature names ordered by descending fused score."""
-        return list(self.scores.sort_values(ascending=False).head(k).index)
+        """
+        Return Top-K feature names ordered by descending fused score.
+        Ties are broken deterministically by alphabetical feature name.
+        """
+        df = pd.DataFrame(
+            {"score": self.scores.values, "name": [str(x) for x in self.scores.index]},
+            index=self.scores.index,
+        )
+        df_sorted = df.sort_values(by=["score", "name"], ascending=[False, True])
+        return list(df_sorted.index[:k])
+
+
+def _deterministic_ranks(s: pd.Series) -> pd.Series:
+    """
+    Compute integer ranks (1 = highest score) with deterministic tie-breaking:
+    primary sort: score descending; secondary sort: feature name ascending.
+    Column permutation invariant.
+    """
+    df = pd.DataFrame(
+        {"score": s.values, "name": [str(x) for x in s.index]},
+        index=s.index,
+    )
+    df_sorted = df.sort_values(by=["score", "name"], ascending=[False, True])
+    ranks = pd.Series(
+        np.arange(1, len(s) + 1, dtype=float),
+        index=df_sorted.index,
+    ).reindex(s.index)
+    return ranks
 
 
 def fuse(
@@ -51,13 +77,14 @@ def fuse(
         fused_s = norm_s * (weights_s ** strength)
     elif method == "rrf":
         # Rank features descending (1 = best)
-        # Ties broken deterministically by index name
-        r_math = norm_s.rank(ascending=False, method="first")
-        r_clin = weights_s.rank(ascending=False, method="first")
+        # Ties broken deterministically by feature name (alphabetical)
+        r_math = _deterministic_ranks(norm_s)
+        r_clin = _deterministic_ranks(weights_s)
         fused_s = (1.0 / (rrf_k + r_math)) + (strength / (rrf_k + r_clin))
     else:
         raise ValueError(f"Unsupported fusion method '{method}'. Choose 'hadamard' or 'rrf'.")
 
-    # Ranks descending
-    ranks = fused_s.rank(ascending=False, method="first")
+    # Ranks descending with deterministic tie-breaking
+    ranks = _deterministic_ranks(fused_s)
     return FusedResult(scores=fused_s, ranks=ranks)
+
