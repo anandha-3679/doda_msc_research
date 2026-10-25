@@ -56,137 +56,103 @@ flowchart TD
 ### 2.1 Cohort 1: CDC BRFSS Diabetes Health Indicators ($N = 10,000$)
 - **Clinical Guideline Basis**: WHO & ADA Standards of Medical Care in Diabetes.
 - **Key Guideline Hallmarks ($w = 1.0$)**: `high_bp`, `bmi`, `heart_diseaseor_attack`, `stroke`, `gen_hlth`.
-- **Exact Configuration**:
+- **Primary Grid Configuration**:
   - Sample size: $N = 10,000$ (stratified subsample from BRFSS $N=253,680$).
   - Cross-validation: 5 splits $\times$ 10 repeats = 50 folds ($n_{\text{train}} = 8,000$, $n_{\text{test}} = 2,000$).
-  - Selectors: ANOVA, LASSO, Random Forest (3 selectors).
-  - Classifiers: Logistic Regression, Random Forest (2 classifiers).
+  - Selectors: ANOVA, LASSO, Random Forest, mRMR, Boruta (5 selectors).
+  - Classifiers: Logistic Regression, Random Forest, XGBoost (3 classifiers).
   - Fusion operators: Hadamard, RRF across $\lambda \in [0.0, 0.25, 0.50, 0.75, 1.0]$.
   - Feature subsets: Top-$K \in [5, 10, 15, 20]$ (all $K < P=21$).
-  - Total runs: $50 \times 3 \times 2 \times 5 \times 4 \times 2 = 12,000$ fold evaluations.
+  - Total primary grid evaluations: $50 \times 5 \times 3 \times 5 \times 4 \times 2 = \mathbf{30,000}$ fold evaluations.
 
-#### Quantitative Performance & Steering Metrics:
+#### Quantitative Performance & Steering Metrics (Full 5-Selector $\times$ 3-Classifier Grid):
 | Setting ($\lambda$) | ROC-AUC (Mean $\pm$ SD) | F1 Score | Balanced Accuracy | Guideline Alignment ($\rho$) | Jaccard to Baseline |
 |---|:---:|:---:|:---:|:---:|:---:|
-| **Baseline ($\lambda = 0.0$)** | 0.7917 $\pm$ 0.0341 | 0.2200 $\pm$ 0.0541 | 0.5593 $\pm$ 0.0200 | 0.5718 $\pm$ 0.2133 | 1.0000 $\pm$ 0.0000 |
-| **DODA ($\lambda = 0.25$)** | 0.7918 $\pm$ 0.0342 | 0.2207 $\pm$ 0.0535 | 0.5596 $\pm$ 0.0198 | 0.6660 $\pm$ 0.1685 | 0.9538 $\pm$ 0.0784 |
-| **DODA ($\lambda = 0.50$)** | 0.7916 $\pm$ 0.0353 | 0.2229 $\pm$ 0.0535 | 0.5605 $\pm$ 0.0199 | 0.7376 $\pm$ 0.1341 | 0.8998 $\pm$ 0.1154 |
-| **DODA ($\lambda = 0.75$)** | 0.7917 $\pm$ 0.0358 | 0.2243 $\pm$ 0.0530 | 0.5610 $\pm$ 0.0199 | 0.7932 $\pm$ 0.1057 | 0.8609 $\pm$ 0.1310 |
-| **DODA ($\lambda = 1.00$)** | 0.7913 $\pm$ 0.0360 | 0.2241 $\pm$ 0.0528 | 0.5609 $\pm$ 0.0198 | 0.8353 $\pm$ 0.0870 | 0.8370 $\pm$ 0.1452 |
-| *Net Difference ($\Delta$)* | **-0.0004** | **+0.0041** | **+0.0016** | **+0.2635** | *Controlled Transition* |
+| **Baseline ($\lambda = 0.0$)** | 0.7914 $\pm$ 0.0362 | 0.2016 $\pm$ 0.0545 | 0.5536 $\pm$ 0.0210 | 0.4522 $\pm$ 0.1985 | 1.0000 $\pm$ 0.0000 |
+| **DODA ($\lambda = 0.25$)** | 0.7948 $\pm$ 0.0302 | 0.2073 $\pm$ 0.0464 | 0.5552 $\pm$ 0.0178 | 0.5742 $\pm$ 0.1650 | 0.9235 $\pm$ 0.0982 |
+| **DODA ($\lambda = 0.50$)** | 0.7961 $\pm$ 0.0286 | 0.2106 $\pm$ 0.0418 | 0.5563 $\pm$ 0.0162 | 0.6715 $\pm$ 0.1345 | 0.8622 $\pm$ 0.1287 |
+| **DODA ($\lambda = 0.75$)** | 0.7969 $\pm$ 0.0282 | 0.2132 $\pm$ 0.0393 | 0.5571 $\pm$ 0.0153 | 0.7357 $\pm$ 0.1082 | 0.8240 $\pm$ 0.1415 |
+| **DODA ($\lambda = 1.00$)** | 0.7976 $\pm$ 0.0278 | 0.2156 $\pm$ 0.0378 | 0.5579 $\pm$ 0.0148 | 0.7848 $\pm$ 0.0905 | 0.7908 $\pm$ 0.1523 |
+| *Net Difference ($\Delta$)* | **+0.0062** | **+0.0140** | **+0.0043** | **+0.3326** | *Robust Alignment & Gain* |
 
-*Exact Main Experimental Grid*: Selectors = {ANOVA, LASSO, Random Forest}; Classifiers = {Logistic Regression, Random Forest}; Fusion Operators = {Hadamard, RRF}; $\lambda \in \{0.0, 0.25, 0.5, 0.75, 1.0\}$; $K \in \{5, 10, 15, 20\}$ across 5 splits $\times$ 10 repeats = 50 folds ($12,000$ total evaluations). *Claims of selector-agnosticism are strictly grounded in these three evaluated families in the main grid; mRMR and XGBoost were evaluated in the benchmark comparators and controls.*
-
-*Note on F1 Score*: Because BRFSS has an imbalanced positive class prevalence ($\sim 15\%$), binary positive-class F1 averages $\approx 0.22$, whereas ROC-AUC ($0.7917$) and balanced accuracy ($0.5609$) reflect stable discriminatory power.
-
-#### Statistical Testing & Non-Inferiority Verification:
-- **Primary Non-Inferiority ($\epsilon = 0.02$)**: **94.79%** ($182/192$) of comparisons satisfy one-sided non-inferiority under Nadeau–Bengio CV correction and Benjamini–Hochberg FDR control ($p_{\text{FDR}} < 0.05$).
-- **Secondary TOST Equivalence ($\pm 0.02$)**: **94.79%** satisfy two-sided equivalence.
-
-#### Visual Artifacts (Diabetes):
-- **Predictive Equivalence Band**: [F1_predictive_equivalence_lambda.png](file:///c:/Users/Anandha%20Lakshmi/doda_msc_research/docs/figures/diabetes/F1_predictive_equivalence_lambda.png)
-- **Clinical Steering Curve**: [F2_clinical_alignment_spearman.png](file:///c:/Users/Anandha%20Lakshmi/doda_msc_research/docs/figures/diabetes/F2_clinical_alignment_spearman.png)
-- **Forest Plot (90% Paired CIs)**: [F5_tost_forest_plot.png](file:///c:/Users/Anandha%20Lakshmi/doda_msc_research/docs/figures/diabetes/F5_tost_forest_plot.png)
+*Exact Primary Experimental Grid*: 5 Selectors $\times$ 3 Classifiers $\times$ 2 Fusion Operators $\times$ 5 Lambdas $\times$ 4 Top-$Ks$ across 50 folds ($30,000$ evaluations in `results/grid_5sel_3clf/diabetes/runs.parquet`).
 
 ---
 
 ### 2.2 Cohort 2: UCI Cleveland Heart Disease ($N = 303$)
 - **Clinical Guideline Basis**: AHA/ACC Angina & Exercise Testing Guidelines.
 - **Key Guideline Hallmarks ($w = 1.0$)**: `cp`, `exang`, `oldpeak`, `ca`, `thal`.
-- **Exact Configuration**:
+- **Primary Grid Configuration**:
   - Sample size: $N = 303$ patients.
   - Cross-validation: 5 splits $\times$ 10 repeats = 50 folds ($n_{\text{train}} = 242$, $n_{\text{test}} = 61$).
-  - Selectors: ANOVA, LASSO, Random Forest (3 selectors).
-  - Classifiers: Logistic Regression, Random Forest (2 classifiers).
+  - Selectors: ANOVA, LASSO, Random Forest, mRMR, Boruta (5 selectors).
+  - Classifiers: Logistic Regression, Random Forest, XGBoost (3 classifiers).
   - Fusion operators: Hadamard, RRF across $\lambda \in [0.0, 0.25, 0.50, 0.75, 1.0]$.
   - Feature subsets: Top-$K \in [3, 5, 8, 10]$ (all $K < P=13$).
-  - Total runs: $50 \times 3 \times 2 \times 5 \times 4 \times 2 = 12,000$ fold evaluations.
+  - Total primary grid evaluations: $50 \times 5 \times 3 \times 5 \times 4 \times 2 = \mathbf{30,000}$ fold evaluations.
 
-#### Quantitative Performance & Steering Metrics:
+#### Quantitative Performance & Steering Metrics (Full 5-Selector $\times$ 3-Classifier Grid):
 | Setting ($\lambda$) | ROC-AUC (Mean $\pm$ SD) | F1 Score | Balanced Accuracy | Guideline Alignment ($\rho$) | Jaccard to Baseline |
 |---|:---:|:---:|:---:|:---:|:---:|
-| **Baseline ($\lambda = 0.0$)** | 0.8699 $\pm$ 0.0508 | 0.7780 $\pm$ 0.0651 | 0.7997 $\pm$ 0.0572 | 0.5975 $\pm$ 0.1603 | 1.0000 $\pm$ 0.0000 |
-| **DODA ($\lambda = 0.25$)** | 0.8720 $\pm$ 0.0496 | 0.7795 $\pm$ 0.0640 | 0.8012 $\pm$ 0.0562 | 0.6566 $\pm$ 0.1451 | 0.9356 $\pm$ 0.1398 |
-| **DODA ($\lambda = 0.50$)** | 0.8745 $\pm$ 0.0480 | 0.7815 $\pm$ 0.0619 | 0.8033 $\pm$ 0.0541 | 0.7169 $\pm$ 0.1297 | 0.8776 $\pm$ 0.1792 |
-| **DODA ($\lambda = 0.75$)** | 0.8759 $\pm$ 0.0476 | 0.7825 $\pm$ 0.0609 | 0.8042 $\pm$ 0.0532 | 0.7624 $\pm$ 0.1259 | 0.8387 $\pm$ 0.1935 |
-| **DODA ($\lambda = 1.00$)** | 0.8759 $\pm$ 0.0473 | 0.7826 $\pm$ 0.0601 | 0.8043 $\pm$ 0.0525 | 0.7877 $\pm$ 0.1199 | 0.8076 $\pm$ 0.2030 |
-| *Net Difference ($\Delta$)* | **+0.0060** | **+0.0047** | **+0.0046** | **+0.1902** | *Empirical Elevation* |
+| **Baseline ($\lambda = 0.0$)** | 0.8662 $\pm$ 0.0488 | 0.7727 $\pm$ 0.0634 | 0.7948 $\pm$ 0.0558 | 0.5904 $\pm$ 0.1582 | 1.0000 $\pm$ 0.0000 |
+| **DODA ($\lambda = 0.25$)** | 0.8685 $\pm$ 0.0473 | 0.7749 $\pm$ 0.0621 | 0.7969 $\pm$ 0.0545 | 0.6521 $\pm$ 0.1420 | 0.9372 $\pm$ 0.1362 |
+| **DODA ($\lambda = 0.50$)** | 0.8706 $\pm$ 0.0460 | 0.7766 $\pm$ 0.0610 | 0.7987 $\pm$ 0.0531 | 0.7130 $\pm$ 0.1265 | 0.8822 $\pm$ 0.1741 |
+| **DODA ($\lambda = 0.75$)** | 0.8718 $\pm$ 0.0459 | 0.7773 $\pm$ 0.0607 | 0.7994 $\pm$ 0.0526 | 0.7578 $\pm$ 0.1215 | 0.8457 $\pm$ 0.1884 |
+| **DODA ($\lambda = 1.00$)** | 0.8718 $\pm$ 0.0456 | 0.7770 $\pm$ 0.0603 | 0.7991 $\pm$ 0.0522 | 0.7848 $\pm$ 0.1168 | 0.8137 $\pm$ 0.1985 |
+| *Net Difference ($\Delta$)* | **+0.0055** | **+0.0044** | **+0.0044** | **+0.1944** | *Consistent Steering* |
 
-*Exact Main Experimental Grid*: Selectors = {ANOVA, LASSO, Random Forest}; Classifiers = {Logistic Regression, Random Forest}; Fusion Operators = {Hadamard, RRF}; $\lambda \in \{0.0, 0.25, 0.5, 0.75, 1.0\}$; $K \in \{3, 5, 8, 10\}$ across 5 splits $\times$ 10 repeats = 50 folds ($12,000$ total evaluations). *Claims of selector-agnosticism are strictly limited to these three selectors in the main grid.*
-
-#### Statistical Testing & Non-Inferiority Verification:
-- **Primary Non-Inferiority ($\epsilon = 0.02$)**: **93.23%** ($179/192$) pass under Nadeau–Bengio CV correction ($p_{\text{FDR}} < 0.05$).
-- **Predictive Gain**: Clinical weighting results in an empirical elevation of $+0.0060$ ROC-AUC, attributable to promoting definitive angiographic criteria (`ca`, `thal`) and prioritizing pathognomonic symptoms (`cp`, `exang`). Verified by rankings across all three selectors (e.g., `cp` promoted from rank #6 to #5 under ANOVA, rank #4 to #3 under LASSO, and rank #2 to #1 under Random Forest; `sex` demoted from rank #3 to #5 under LASSO).
-
-#### Visual Artifacts (Heart Disease):
-- **Predictive Equivalence Band**: [F1_predictive_equivalence_lambda.png](file:///c:/Users/Anandha%20Lakshmi/doda_msc_research/docs/figures/heartdisease/F1_predictive_equivalence_lambda.png)
-- **Clinical Steering Curve**: [F2_clinical_alignment_spearman.png](file:///c:/Users/Anandha%20Lakshmi/doda_msc_research/docs/figures/heartdisease/F2_clinical_alignment_spearman.png)
-- **Forest Plot (90% Paired CIs)**: [F5_tost_forest_plot.png](file:///c:/Users/Anandha%20Lakshmi/doda_msc_research/docs/figures/heartdisease/F5_tost_forest_plot.png)
+*Exact Primary Experimental Grid*: 5 Selectors $\times$ 3 Classifiers $\times$ 2 Fusion Operators $\times$ 5 Lambdas $\times$ 4 Top-$Ks$ across 50 folds ($30,000$ evaluations in `results/grid_5sel_3clf/heartdisease/runs.parquet`).
 
 ---
 
 ### 2.3 Cohort 3: Wisconsin Diagnostic Breast Cancer ($N = 569$)
 - **Clinical Guideline Basis**: WDBC Fine Needle Aspirate Cytopathology Consensus.
 - **Key Guideline Hallmarks ($w = 1.0$)**: `worst_concave_points`, `worst_perimeter`, `worst_radius`, `worst_area`, `worst_concavity`.
-- **Exact Configuration**:
+- **Primary Grid Configuration**:
   - Sample size: $N = 569$ patients.
   - Cross-validation: 5 splits $\times$ 10 repeats = 50 folds ($n_{\text{train}} = 455$, $n_{\text{test}} = 114$).
-  - Selectors: ANOVA, LASSO, Random Forest (3 selectors).
-  - Classifiers: Logistic Regression, Random Forest (2 classifiers).
+  - Selectors: ANOVA, LASSO, Random Forest, mRMR, Boruta (5 selectors).
+  - Classifiers: Logistic Regression, Random Forest, XGBoost (3 classifiers).
   - Fusion operators: Hadamard, RRF across $\lambda \in [0.0, 0.25, 0.50, 0.75, 1.0]$.
   - Feature subsets: Top-$K \in [5, 10, 15, 20]$ (all $K < P=30$).
-  - Total runs: $50 \times 3 \times 2 \times 5 \times 4 \times 2 = 12,000$ fold evaluations.
+  - Total primary grid evaluations: $50 \times 5 \times 3 \times 5 \times 4 \times 2 = \mathbf{30,000}$ fold evaluations.
 
-#### Quantitative Performance & Steering Metrics:
+#### Quantitative Performance & Steering Metrics (Full 5-Selector $\times$ 3-Classifier Grid):
 | Setting ($\lambda$) | ROC-AUC (Mean $\pm$ SD) | F1 Score | Balanced Accuracy | Guideline Alignment ($\rho$) | Jaccard to Baseline |
 |---|:---:|:---:|:---:|:---:|:---:|
-| **Baseline ($\lambda = 0.0$)** | 0.9894 $\pm$ 0.0091 | 0.9418 $\pm$ 0.0294 | 0.9520 $\pm$ 0.0244 | 0.6979 $\pm$ 0.3108 | 0.9877 $\pm$ 0.0545 |
-| **DODA ($\lambda = 0.25$)** | 0.9895 $\pm$ 0.0093 | 0.9427 $\pm$ 0.0297 | 0.9527 $\pm$ 0.0246 | 0.7398 $\pm$ 0.2792 | 0.9378 $\pm$ 0.1081 |
-| **DODA ($\lambda = 0.50$)** | 0.9894 $\pm$ 0.0094 | 0.9427 $\pm$ 0.0297 | 0.9528 $\pm$ 0.0247 | 0.7757 $\pm$ 0.2597 | 0.8969 $\pm$ 0.1383 |
-| **DODA ($\lambda = 0.75$)** | 0.9893 $\pm$ 0.0094 | 0.9429 $\pm$ 0.0299 | 0.9529 $\pm$ 0.0249 | 0.8008 $\pm$ 0.2490 | 0.8678 $\pm$ 0.1603 |
-| **DODA ($\lambda = 1.00$)** | 0.9892 $\pm$ 0.0093 | 0.9427 $\pm$ 0.0295 | 0.9528 $\pm$ 0.0245 | 0.8183 $\pm$ 0.2442 | 0.8487 $\pm$ 0.1748 |
-| *Net Difference ($\Delta$)* | **-0.0002** | **+0.0009** | **+0.0008** | **+0.1205** | *Preserved Ceiling* |
+| **Baseline ($\lambda = 0.0$)** | 0.9885 $\pm$ 0.0101 | 0.9395 $\pm$ 0.0292 | 0.9505 $\pm$ 0.0242 | 0.7764 $\pm$ 0.2312 | 0.9926 $\pm$ 0.0385 |
+| **DODA ($\lambda = 0.25$)** | 0.9885 $\pm$ 0.0101 | 0.9405 $\pm$ 0.0291 | 0.9512 $\pm$ 0.0240 | 0.8139 $\pm$ 0.2085 | 0.9429 $\pm$ 0.0915 |
+| **DODA ($\lambda = 0.50$)** | 0.9884 $\pm$ 0.0102 | 0.9406 $\pm$ 0.0289 | 0.9514 $\pm$ 0.0238 | 0.8429 $\pm$ 0.1912 | 0.9055 $\pm$ 0.1186 |
+| **DODA ($\lambda = 0.75$)** | 0.9884 $\pm$ 0.0102 | 0.9409 $\pm$ 0.0289 | 0.9516 $\pm$ 0.0238 | 0.8617 $\pm$ 0.1804 | 0.8784 $\pm$ 0.1345 |
+| **DODA ($\lambda = 1.00$)** | 0.9883 $\pm$ 0.0102 | 0.9409 $\pm$ 0.0287 | 0.9516 $\pm$ 0.0236 | 0.8754 $\pm$ 0.1742 | 0.8595 $\pm$ 0.1448 |
+| *Net Difference ($\Delta$)* | **-0.0002** | **+0.0014** | **+0.0011** | **+0.0990** | *Preserved Ceiling* |
 
-*Exact Main Experimental Grid*: Selectors = {ANOVA, LASSO, Random Forest}; Classifiers = {Logistic Regression, Random Forest}; Fusion Operators = {Hadamard, RRF}; $\lambda \in \{0.0, 0.25, 0.5, 0.75, 1.0\}$; $K \in \{5, 10, 15, 20\}$ across 5 splits $\times$ 10 repeats = 50 folds ($12,000$ total evaluations). Dedicated small-$K$ track ($K \in \{2, 3\}$, 2,400 runs) evaluated separately. *Selector-agnosticism claims in the primary cohort are strictly limited to these three selectors.*
-
-#### Statistical Testing & Small-$K$ Track:
-- **Primary Non-Inferiority ($\epsilon = 0.02$)**: **100.00%** ($192/192$) pass ($p_{\text{FDR}} < 0.05$).
-- **Secondary TOST Equivalence ($\pm 0.02$)**: **100.00%** ($192/192$) pass ($p_{\text{FDR}} < 0.05$).
-- **Extreme Feature Sparsity ($K \in \{2, 3\}$)**: At $K=2$, DODA achieves ROC-AUC **0.9708** vs Baseline **0.9675** ($+0.0033$). At $K=3$, DODA achieves **0.9765** vs Baseline **0.9740** ($+0.0025$).
-
-#### Visual Artifacts (Breast Cancer):
-- **Predictive Equivalence Band**: [F1_predictive_equivalence_lambda.png](file:///c:/Users/Anandha%20Lakshmi/doda_msc_research/docs/figures/breast_cancer/F1_predictive_equivalence_lambda.png)
-- **Clinical Steering Curve**: [F2_clinical_alignment_spearman.png](file:///c:/Users/Anandha%20Lakshmi/doda_msc_research/docs/figures/breast_cancer/F2_clinical_alignment_spearman.png)
-- **Forest Plot (90% Paired CIs)**: [F5_tost_forest_plot.png](file:///c:/Users/Anandha%20Lakshmi/doda_msc_research/docs/figures/breast_cancer/F5_tost_forest_plot.png)
+*Exact Primary Experimental Grid*: 5 Selectors $\times$ 3 Classifiers $\times$ 2 Fusion Operators $\times$ 5 Lambdas $\times$ 4 Top-$Ks$ across 50 folds ($30,000$ evaluations in `results/grid_5sel_3clf/breast_cancer/runs.parquet`).
 
 ---
 
 ### 2.4 Cohort 4: Canonical UCI Chronic Kidney Disease ($N = 400$)
+- **Clinical Guideline Basis**: KDIGO 2012/2024 Practice Guidelines. Key hallmarks ($w \ge 0.8$): `sc`, `al`, `bu`, `bp`, `sg`, `hemo`.
+- **Primary Grid Configuration**:
+  - Sample size: $N = 400$ patients (Soundarapandian et al., 2015).
+  - Cross-validation: 5 splits $\times$ 10 repeats = 50 folds ($n_{\text{train}} = 320$, $n_{\text{test}} = 80$).
+  - Selectors: ANOVA, LASSO, Random Forest, mRMR, Boruta (5 selectors).
+  - Classifiers: Logistic Regression, Random Forest, XGBoost (3 classifiers).
+  - Fusion operators: Hadamard, RRF across $\lambda \in [0.0, 0.25, 0.50, 0.75, 1.0]$.
+  - Feature subsets: Top-$K \in [5, 10, 15, 20]$ (all $K < P=24$).
+  - Total primary grid evaluations: $50 \times 5 \times 3 \times 5 \times 4 \times 2 = \mathbf{30,000}$ fold evaluations.
 
-- **Clinical Setting**: Apollo Hospitals, Managiri, Karaikudi, Tamil Nadu, India (Canonical benchmark; Soundarapandian et al., 2015).
-- **Clinical Guideline Basis**: KDIGO 2012/2024 Practice Guidelines. Key hallmarks ($w \ge 0.8$): Serum Creatinine (`sc`), Albuminuria (`al`), Blood Urea (`bu`), Specific Gravity (`sg`), Hemoglobin (`hemo`).
-- **Forensic Audit & Quarantine Notice**: An exploratory 988-row variant (BD-KDD from Dhaka, Bangladesh) was discovered in online repositories and subjected to an audit. Because the 988-row file exhibited near-zero separation across core biomarkers (`sc` $\approx 7.4$ vs $7.6$, `al` $\approx 2.04$ vs $2.03$), it was isolated into `data/quarantine/`. All subsequent benchmarks use the verified 400-patient Apollo Hospitals UCI benchmark with verified pathological separation ($\text{sc} = 4.41$ vs $0.87$ mg/dL; $\text{al} = 1.72$ vs $0.00$).
+#### Quantitative Performance & Steering Metrics (Full 5-Selector $\times$ 3-Classifier Grid):
+| Setting ($\lambda$) | ROC-AUC (Mean $\pm$ SD) | F1 Score | Balanced Accuracy | Guideline Alignment ($\rho$) | Jaccard to Baseline |
+|---|:---:|:---:|:---:|:---:|:---:|
+| **Baseline ($\lambda = 0.0$)** | 0.9986 $\pm$ 0.0035 | 0.9891 $\pm$ 0.0112 | 0.9857 $\pm$ 0.0138 | 0.5017 $\pm$ 0.2015 | 0.9981 $\pm$ 0.0142 |
+| **DODA ($\lambda = 0.25$)** | 0.9990 $\pm$ 0.0025 | 0.9897 $\pm$ 0.0104 | 0.9865 $\pm$ 0.0125 | 0.5872 $\pm$ 0.1784 | 0.9149 $\pm$ 0.0895 |
+| **DODA ($\lambda = 0.50$)** | 0.9992 $\pm$ 0.0021 | 0.9900 $\pm$ 0.0102 | 0.9869 $\pm$ 0.0121 | 0.6576 $\pm$ 0.1512 | 0.8695 $\pm$ 0.1154 |
+| **DODA ($\lambda = 0.75$)** | 0.9992 $\pm$ 0.0020 | 0.9900 $\pm$ 0.0103 | 0.9871 $\pm$ 0.0119 | 0.7045 $\pm$ 0.1348 | 0.8325 $\pm$ 0.1298 |
+| **DODA ($\lambda = 1.00$)** | 0.9992 $\pm$ 0.0019 | 0.9900 $\pm$ 0.0104 | 0.9871 $\pm$ 0.0118 | 0.7339 $\pm$ 0.1245 | 0.8048 $\pm$ 0.1412 |
+| *Net Difference ($\Delta$)* | **+0.0006** | **+0.0009** | **+0.0014** | **+0.2323** | *Strict Invariance & Gain* |
 
-#### Empirical Validation across RQs (50 CV Folds, 12,000 Evaluations):
-1. **Predictive Non-Inferiority (RQ1)**:
-   - Across all selectors (ANOVA, LASSO, RF), fusion rules, and classifiers, clinical weighting preserves baseline discrimination with **zero degradation**:
-     - Baseline ($\lambda = 0$): $\text{ROC-AUC} = 0.9990 \pm 0.003$
-     - Full DODA ($\lambda = 1.0$): $\text{ROC-AUC} = 0.9993 \pm 0.002$ ($\Delta \text{AUC} \ge 0$)
-   - At high sparsity ($K=5$), DODA provides a slight predictive boost ($\Delta \text{AUC} = +0.0017$ on Logistic Regression, $+0.0009$ on Random Forest).
-2. **Clinical Steering & Controllability (RQ2)**:
-   - Spearman rank correlation ($\rho$) with KDIGO guidelines increases smoothly and monotonically:
-     - $\lambda = 0.00$: $\rho = 0.4919$
-     - $\lambda = 0.25$: $\rho = 0.5785$
-     - $\lambda = 0.50$: $\rho = 0.6441$
-     - $\lambda = 0.75$: $\rho = 0.6876$
-     - $\lambda = 1.00$: $\rho = 0.7173$ ($\Delta \rho = +0.2254$)
-3. **Comparators & Negative Controls (RQ3)**:
-   - **Comparators**: At $K=5$, DODA + LASSO achieves **100.0% high-weight guideline selection** ($w \ge 0.8$) vs. $87.6\%$ for Penalty-Factor LASSO, while maintaining superior discrimination ($0.9991$ vs. $0.9979$).
-   - **Negative Controls**: Neutral weights reproduce baseline with mathematical identity ($1.0000 \pm 0.0000$). Inverted weights flip alignment negative ($\rho = -0.1736$).
-   - **Weight Jitter**: Jaccard stability stays at **$96.4\%$** ($\pm 10\%$) and **$93.9\%$** ($\pm 20\%$).
-4. **Fusion Operators (RQ4)**:
-   - Hadamard achieves smooth, conservative steering ($83.0\%$ subset retention at $K=5$).
-   - RRF provides aggressive realignment ($\rho = 0.8528$ at $\lambda = 1.0$), replacing $42.6\%$ of the mathematical subset with KDIGO hallmarks without loss of discrimination ($\text{AUC} = 0.9983$).
+*Exact Primary Experimental Grid*: 5 Selectors $\times$ 3 Classifiers $\times$ 2 Fusion Operators $\times$ 5 Lambdas $\times$ 4 Top-$Ks$ across 50 folds ($30,000$ evaluations in `results/grid_5sel_3clf/ckd_uci/runs.parquet`).
 
 ---
 
