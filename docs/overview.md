@@ -139,7 +139,8 @@ To ensure conclusions are methodologically sound and guard against false positiv
 
 ### Track 2: Clinical Controllability & Pareto Curve (RQ2)
 - **Objective**: Evaluates the descriptive trade-off curve between clinical guideline alignment ($\rho$) and predictive accuracy (ROC-AUC).
-- **Protocol**: Traces alignment growth across a prespecified fixed descriptive grid $\lambda \in \{0.0, 0.25, 0.50, 0.75, 1.0\}$. Inner nested CV on training splits is recognized as a potential prospective deployment workflow for selecting an operational default $\lambda^*$, while empirical results report the full descriptive Pareto frontier.
+- **Protocol**: Traces alignment growth across a prespecified fixed descriptive grid $\lambda \in \{0.0, 0.25, 0.50, 0.75, 1.0\}$. Note: Because alignment ($\rho$) is computed against the steering weights $\mathbf{w}$, it measures mathematical *steering responsiveness and algorithmic fidelity*, rather than an external clinical validation. External specificity is evaluated under Track 3 (Negative Controls). Inner nested CV on training splits is recognized as a prospective deployment workflow for selecting an operational default $\lambda^*$.
+
 
 ### Track 3: Negative Controls Specificity Grid (RQ3)
 - **Objective**: Replaces authentic guideline weights with 4 control profiles to prove steering is driven by authentic medical evidence rather than random regularization:
@@ -164,8 +165,9 @@ To ensure conclusions are methodologically sound and guard against false positiv
 
 | Track | Protocol & Dimensions | Runs per Cohort | Total (4 Cohorts) |
 |---|---|:---:|:---:|
-| **1. Primary Cross-Validation Grid** | 50 folds $\times$ 3 selectors $\times$ 2 fusions $\times$ 5 $\lambda$ sweeps $\times$ 4 $K$ values $\times$ 2 classifiers | **12,000 runs** | **48,000 runs** |
+| **1. Primary Cross-Validation Grid** | 50 folds $\times$ 5 selectors $\times$ 2 fusions $\times$ 5 $\lambda$ sweeps $\times$ 4 $K$ values $\times$ 3 classifiers | **30,000 runs** | **120,000 runs** |
 | **2. Negative Controls Grid (RQ3)** | 50 folds $\times$ 4 selectors $\times$ 5 control types (True, Neutral, Permuted, Random, Inverted) $\times$ 4 $K$ values $\times$ 3 classifiers | **12,000 runs** | **48,000 runs** |
 | **3. Selector-Specific Comparators (RQ3)** | 50 folds $\times$ 4 methods (PF-LASSO, DODA-LASSO, Prior-mRMR, DODA-mRMR) $\times$ 4 $K$ values $\times$ 3 classifiers | **2,400 runs** | **9,600 runs** |
 | **4. Weight-Jitter Sensitivity** | 100 random draws $\times$ 2 noise levels ($\pm 10\%, \pm 20\%$) $\times$ 4 selectors $\times$ 4 $K$ values | **3,200 evaluations** | **12,800 evaluations** |
-| **Total Empirical Evaluations** | | **29,600 per cohort** | **$\approx$ 118,400 evaluations** |
+| **Total Primary Benchmark Evaluations** | | **30,000 per cohort** | **120,000 evaluations** |
+

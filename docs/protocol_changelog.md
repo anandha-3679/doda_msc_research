@@ -28,7 +28,8 @@ This changelog formally records all adjustments, additions, and reframings to th
   - *Post-hoc status*: **Yes**. Driven by the observation that WDBC baseline AUC is $\approx 0.99$ at $K \ge 5$ (ceiling effect), requiring evaluation under extreme feature compression to test whether DODA preserves discrimination under severe sparsity.
 
 - **Change 6: Terminology and Positioning Precision**
-  - *Description*: Standardized positioning wording: DODA is "selector-agnostic" (not "model-agnostic"). Prohibited claims of "proven zero-cost" or "enhanced stability". Provable weight provenance clarified as "guideline-derived (WHO/ADA/AHA/ACC/WDBC Consensus)".
+  - *Description*: Standardized positioning wording: DODA is "selector-agnostic" (not "model-agnostic"). Prohibited claims of "proven zero-cost" or "enhanced stability". Weight provenance clarified as guideline-derived (WHO/ADA, AHA/ACC, KDIGO) with Breast Cancer (WDBC) weights author-assigned from FNA diagnostic literature.
+
   - *Rationale*: Scientific rigor and avoiding overclaiming.
 
 ---

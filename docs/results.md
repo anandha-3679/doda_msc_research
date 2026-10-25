@@ -48,7 +48,8 @@ flowchart TD
 ### 1.1 Prevention of Information Leakage
 - **Strict In-Fold Preprocessing**: `SimpleImputer` (median) and `StandardScaler` are fitted exclusively on the training split within each fold and applied to the test split.
 - **In-Fold Feature Selection**: Mathematical selectors compute raw scores $S_{\text{raw}}$ using training data only.
-- **Pre-declared Clinical Weights**: Weight files are fixed prior to experiments and documented in `configs/weights/provenance.csv` with primary guideline citations (ADA, AHA/ACC, KDIGO, WDBC Consensus).
+- **Pre-declared Clinical Weights**: Weight files are fixed prior to experiments and documented in `configs/weights/provenance.csv` with primary guideline citations (WHO/ADA, AHA/ACC, KDIGO) and author-assigned weights from published diagnostic literature for WDBC.
+
 
 ---
 
@@ -107,8 +108,9 @@ flowchart TD
 ---
 
 ### 2.3 Cohort 3: Wisconsin Diagnostic Breast Cancer ($N = 569$)
-- **Clinical Guideline Basis**: WDBC Fine Needle Aspirate Cytopathology Consensus.
-- **Key Guideline Hallmarks ($w = 1.0$)**: `worst_concave_points`, `worst_perimeter`, `worst_radius`, `worst_area`, `worst_concavity`.
+- **Domain Weight Basis**: Author-assigned from published FNA cytopathology literature (Street et al., 1993; Wolberg et al., 1995; Mangasarian et al., 1995), reflecting extreme nuclear pleomorphism and contour irregularity rather than a formal clinical consensus guideline. A formal single-clinician review is recommended prior to clinical deployment.
+- **Key Hallmarks ($w = 1.0$)**: `worst_concave_points`, `worst_perimeter`, `worst_radius`, `worst_area`, `worst_concavity`.
+
 - **Primary Grid Configuration**:
   - Sample size: $N = 569$ patients.
   - Cross-validation: 5 splits $\times$ 10 repeats = 50 folds ($n_{\text{train}} = 455$, $n_{\text{test}} = 114$).
@@ -283,5 +285,10 @@ Comparing findings across the four cohorts reveals fundamental properties of cli
 Based on the synthesized 120,000 evaluations:
 - **Default Operator**: Hadamard continuous fusion ($\lambda = 1.0$) is superior to RRF across all cohorts, exhibiting no rank fragmentation.
 - **Minimum Budget**: Set $K \ge 5$ (or $K \ge 0.25 \cdot P$) to preserve predictive safety margins under tree-based downstream models.
-- **Weight Transparency**: Clinical weights should remain externalized in auditable JSON files with formal provenance links, separating medical judgement from machine learning code.
+### 8.4 Methodological Limitation: Circularity of Alignment Metrics (RQ2)
+A critical methodological distinction must be drawn when interpreting the alignment results for RQ2:
+- **Steering Responsiveness vs. Clinical Validation**: Spearman correlation ($\rho$) and hallmark share are calculated using the exact clinical weight vectors that parameterize the fusion operator ($S \cdot w^\lambda$). Because the mathematical operator explicitly weights features by $w_j^\lambda$, an increase in alignment across $\lambda$ is guaranteed by construction. This confirms **internal steering responsiveness and algorithmic fidelity**—proving that DODA functions predictably as an operator—but does *not* prove that the selected features represent an independent clinical truth.
+- **Role of Negative Controls (RQ3)**: To evaluate whether steering reflects genuine domain signals rather than generic regularization, RQ3 tested permuted, random, and inverted weight profiles. The sharp degradation in alignment under random weights ($\rho = 0.22 - 0.54$) and negative inversion ($\rho = -0.23$ to $-0.77$) confirms that steering responds specifically to the structure of the provided weights.
+- **Thesis & Supervisor Alignment**: For a thesis defense, candidates should explicitly present RQ2 as demonstrating *controllability and operator responsiveness* rather than empirical clinical superiority, and note that prospective clinical validation requires independent clinician ranking panels or held-out outcome endpoints.
+
 

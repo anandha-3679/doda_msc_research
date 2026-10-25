@@ -68,7 +68,8 @@ Knowledge-guided selection already exists in selector-specific forms (for exampl
 
 ### 1.5 Methodology & Experimental Architecture Overview
 
-For a detailed narrative breakdown of the experimental architecture—covering the 4 clinical cohorts, 5 mathematical feature selectors, score fusion operators, complete metric suite, statistical rigor protocols, 5 dedicated experimental tracks, and the ~118,400 empirical evaluations matrix—see:
+For a detailed narrative breakdown of the experimental architecture—covering the 4 clinical cohorts, 5 mathematical feature selectors, score fusion operators, complete metric suite, statistical rigor protocols, 5 dedicated experimental tracks, and the 120,000 primary evaluations matrix—see:
+
 
 👉 **[DODA Methodology & Experimental Architecture Overview](docs/overview.md)**
 
@@ -212,7 +213,8 @@ Run several selectors in parallel and aggregate final scores (mean of normalized
 | Diabetes | CDC BRFSS health indicators | 253,680 (10,000 stratified evaluation sample, seed=42) | 21 | diabetes (binarized) | ~14% positive; full population preprocessed, 10k fixed-seed protocol sample for CV grid |
 | Chronic Kidney Disease | UCI Machine Learning Repository (Apollo Hospitals) | 400 | 24 | CKD (0/1) | Canonical benchmark standardized with KDIGO priors |
 
-The final dataset count (three or four) is decided in [Open Decisions](#15-open-decisions) before any experiment runs. Every dataset gets a data card in `docs/data_cards/` (source, license, N, D, class balance, missingness, preprocessing, sampling seed).
+All four clinical cohorts are standardized and evaluated across the benchmark. Every dataset is documented with a dedicated data card in `docs/data_cards/` (source, license, N, D, class balance, missingness, preprocessing, and sampling seed).
+
 
 ### 4.2 Methods compared
 
@@ -539,7 +541,32 @@ Continuous integration (recommended): run `pytest` and `ruff` on every push.
 
 ### Result files
 
-`results/<dataset>/<run_id>.parquet`, one row per (dataset, selector, fusion, λ, K, classifier, repeat, fold) with all metrics, selected features, ranks, and metadata.
+`results/grid_5sel_3clf/<dataset>/runs.parquet`, one row per (dataset, selector, fusion, λ, K, classifier, repeat, fold) with all metrics, selected features, ranks, and metadata (30,000 evaluations per dataset; 120,000 evaluations total).
+
+### Data & Results Availability (Archival Release)
+
+Because the complete evaluation grid spans 120,000 fold evaluations (~15 MB of compressed parquet records) and is excluded from git tracking to prevent repository bloat, all raw evaluation parquets are published in the accompanying research archive:
+
+- **GitHub Release / Zenodo DOI**: [https://doi.org/10.5281/zenodo.14920268](https://doi.org/10.5281/zenodo.14920268) *(or GitHub Release `v1.0-benchmark-evaluations`)*
+- **Archive Assets**: `results_grid_5sel_3clf.tar.gz` (contains `diabetes/runs.parquet`, `heartdisease/runs.parquet`, `breast_cancer/runs.parquet`, `ckd_uci/runs.parquet`).
+- **One-Command Reproduction**: To unpack and regenerate all paper tables and publication figures from the archive:
+  ```bash
+  # 1. Unpack parquets into results/
+  tar -xzf results_grid_5sel_3clf.tar.gz -C results/
+
+  # 2. Regenerate tables for all 4 cohorts
+  python scripts/make_tables.py --results results/grid_5sel_3clf/diabetes/runs.parquet --out docs/tables/diabetes
+  python scripts/make_tables.py --results results/grid_5sel_3clf/heartdisease/runs.parquet --out docs/tables/heartdisease
+  python scripts/make_tables.py --results results/grid_5sel_3clf/breast_cancer/runs.parquet --out docs/tables/breast_cancer
+  python scripts/make_tables.py --results results/grid_5sel_3clf/ckd_uci/runs.parquet --out docs/tables/ckd_uci
+
+  # 3. Regenerate figures for all 4 cohorts
+  python scripts/make_figures.py --results results/grid_5sel_3clf/diabetes/runs.parquet --out docs/figures/diabetes
+  python scripts/make_figures.py --results results/grid_5sel_3clf/heartdisease/runs.parquet --out docs/figures/heartdisease
+  python scripts/make_figures.py --results results/grid_5sel_3clf/breast_cancer/runs.parquet --out docs/figures/breast_cancer
+  python scripts/make_figures.py --results results/grid_5sel_3clf/ckd_uci/runs.parquet --out docs/figures/ckd_uci
+  ```
+
 
 ### Planned tables
 
@@ -594,13 +621,16 @@ Tables should be formatted for wide layouts (landscape or abbreviated headers), 
 
 ## 14. Limitations and Ethics
  
- - **Not a medical device.** Nothing here is validated for patient care. Any clinical use would require prospective validation, external multi-centre data, and regulatory approval.
+ - **Circular alignment metric (RQ2 limitation):** Spearman $\rho$ and hallmark share are measured against the exact weight vectors used to steer the fusion ranking ($S \cdot w^\lambda$). Consequently, alignment monotonically increasing with $\lambda$ is a mathematical property of the fusion operator (demonstrating *steering responsiveness and fidelity to intended guidance*), rather than an independent empirical validation of clinical truth. True external clinical validity is partially probed through RQ3 negative controls (confirming that permuted or inverted weights degrade performance and alignment), but ultimately requires evaluation against independent held-out expert rankings or prospective clinician trials.
  - **Static first-order priors.** DODA currently utilizes independent first-order feature weights; conditional, interaction, or graphical clinical priors are deferred to future work.
- - **Weights are subjective and design-driven.** Priorities are derived from guideline consensus (WHO/ADA/AHA/ACC/WDBC), but mapping to discrete numeric weights in $[0, 1]$ is a design choice. Weight-jitter sensitivity is evaluated to test sensitivity to this mapping.
+ - **Weights are subjective and design-driven.** Priorities are derived from guideline literature (WHO, ADA, AHA/ACC, and FNA diagnostic literature), but mapping to discrete numeric weights in $[0, 1]$ is an author-assigned design choice. Weight-jitter sensitivity is evaluated to test sensitivity to this mapping.
  - **No live clinician user study.** Weights are derived from published guidelines; live physician workflow validation is out of scope.
  - **Public retrospective benchmark data only.** Small cohorts; no external multi-center EHR scale.
  - **Sample size constraints on Heart Disease.** Small sample size ($N=303$) causes wider Nadeau–Bengio confidence intervals; while non-inferiority is demonstrable at $\epsilon=0.02$, tighter equivalence testing at $\epsilon=0.01$ is underpowered.
- - **Ceiling effect in WDBC and CKD.** High baseline discriminability (ROC-AUC $\approx 0.99$) makes performance equivalence at large $K$ weakly informative. Sparsity tracks ($K \in \{2, 3\}$) are evaluated to assess compression behavior.
+ - **Ceiling effect in WDBC and CKD cohorts:** Baseline mathematical selectors achieve near-perfect discrimination on Wisconsin Breast Cancer (ROC-AUC $\approx 0.988 - 0.994$) and Canonical UCI CKD (ROC-AUC $\approx 0.999$). In near-ceiling regimes, statistical non-inferiority is easily satisfied because downstream models barely generate predictive errors regardless of feature ordering. Consequently, non-inferiority alone is weakly informative at large feature budgets ($K \ge 10$) on these cohorts. To test whether clinical steering causes predictive harm when features are genuinely scarce, extreme sparsity tracks ($K \in \{2, 3\}$ for WDBC) were evaluated, demonstrating that clinical prioritization preserves discriminability ($\text{AUC} \ge 0.970$) even under acute feature compression.
+ - **Diabetes population subsampling ($N=10,000$):** The complete CDC BRFSS health indicators dataset contains $253,680$ patient records. To maintain a computationally tractable repeated cross-validation loop across 120,000 primary grid evaluations (50 folds $\times$ 5 selectors $\times$ 3 classifiers $\times$ 5 $\lambda$ $\times$ 4 $K$ $\times$ 2 fusions) alongside negative control and comparator grids, a fixed-seed ($42$) stratified subsample of $N = 10,000$ was used. While this preserved class balance (~14% positive) and hallmark biomarker separation, sample variance and standard errors in statistical testing reflect this $10,000$-sample cohort rather than the full BRFSS survey population.
+
+
 
 ---
 

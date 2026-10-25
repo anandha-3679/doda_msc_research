@@ -2,6 +2,11 @@ repomix-output.xml
 .venv/
 __pycache__/
 *.pyc
+*.egg-info/
+*.egg
+build/
+dist/
 results/
 .pytest_cache/
 .ruff_cache/
+

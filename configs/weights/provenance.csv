@@ -33,36 +33,36 @@ heartdisease,oldpeak,1.0,AHA/ACC Stress Testing Criteria,guideline,ST depression
 heartdisease,slope,0.9,AHA/ACC Stress Testing Criteria,guideline,Slope of the peak exercise ST segment discriminates true ischemic changes (downsloping/horizontal vs upsloping)
 heartdisease,ca,1.0,ACC/AHA Coronary Angiography Criteria,guideline,Number of major vessels (0-3) colored by flourosopy directly reflects anatomic coronary disease severity
 heartdisease,thal,1.0,ASNC / AHA Myocardial Perfusion Standards,guideline,"Thallium scintigraphy defect status (normal, fixed, reversible) identifies viable vs infarcted ischemic myocardium"
-breast_cancer,mean_radius,0.9,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: radius assesses average cellular differentiation
-breast_cancer,mean_texture,0.5,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Mean nuclear morphology metric: texture assesses average cellular differentiation
-breast_cancer,mean_perimeter,0.9,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: perimeter assesses average cellular differentiation
-breast_cancer,mean_area,0.9,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: area assesses average cellular differentiation
-breast_cancer,mean_smoothness,0.4,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Mean nuclear morphology metric: smoothness assesses average cellular differentiation
-breast_cancer,mean_compactness,0.7,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: compactness assesses average cellular differentiation
-breast_cancer,mean_concavity,0.9,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: concavity assesses average cellular differentiation
-breast_cancer,mean_concave_points,0.9,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: concave_points assesses average cellular differentiation
-breast_cancer,mean_symmetry,0.5,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Mean nuclear morphology metric: symmetry assesses average cellular differentiation
-breast_cancer,mean_fractal_dimension,0.3,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Mean nuclear morphology metric: fractal_dimension assesses average cellular differentiation
-breast_cancer,radius_error,0.5,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: radius measures intra-tumor morphological variation
-breast_cancer,texture_error,0.3,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: texture measures intra-tumor morphological variation
-breast_cancer,perimeter_error,0.5,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: perimeter measures intra-tumor morphological variation
-breast_cancer,area_error,0.5,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: area measures intra-tumor morphological variation
-breast_cancer,smoothness_error,0.2,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: smoothness measures intra-tumor morphological variation
-breast_cancer,compactness_error,0.3,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: compactness measures intra-tumor morphological variation
-breast_cancer,concavity_error,0.4,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: concavity measures intra-tumor morphological variation
-breast_cancer,concave_points_error,0.4,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: concave_points measures intra-tumor morphological variation
-breast_cancer,symmetry_error,0.3,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: symmetry measures intra-tumor morphological variation
-breast_cancer,fractal_dimension_error,0.2,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: fractal_dimension measures intra-tumor morphological variation
-breast_cancer,worst_radius,1.0,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: radius indicates peak extreme nuclear atypia
-breast_cancer,worst_texture,0.6,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Largest 3-cell nuclear measurement: texture indicates peak extreme nuclear atypia
-breast_cancer,worst_perimeter,1.0,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: perimeter indicates peak extreme nuclear atypia
-breast_cancer,worst_area,1.0,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: area indicates peak extreme nuclear atypia
-breast_cancer,worst_smoothness,0.5,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Largest 3-cell nuclear measurement: smoothness indicates peak extreme nuclear atypia
-breast_cancer,worst_compactness,0.8,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: compactness indicates peak extreme nuclear atypia
-breast_cancer,worst_concavity,1.0,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: concavity indicates peak extreme nuclear atypia
-breast_cancer,worst_concave_points,1.0,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: concave_points indicates peak extreme nuclear atypia
-breast_cancer,worst_symmetry,0.6,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Largest 3-cell nuclear measurement: symmetry indicates peak extreme nuclear atypia
-breast_cancer,worst_fractal_dimension,0.3,WDBC Cytopathology Consensus (Street/Wolberg/Mangasarian),expert,Largest 3-cell nuclear measurement: fractal_dimension indicates peak extreme nuclear atypia
+breast_cancer,mean_radius,0.9,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: radius assesses average cellular differentiation
+breast_cancer,mean_texture,0.5,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),expert,Mean nuclear morphology metric: texture assesses average cellular differentiation
+breast_cancer,mean_perimeter,0.9,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: perimeter assesses average cellular differentiation
+breast_cancer,mean_area,0.9,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: area assesses average cellular differentiation
+breast_cancer,mean_smoothness,0.4,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),expert,Mean nuclear morphology metric: smoothness assesses average cellular differentiation
+breast_cancer,mean_compactness,0.7,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: compactness assesses average cellular differentiation
+breast_cancer,mean_concavity,0.9,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: concavity assesses average cellular differentiation
+breast_cancer,mean_concave_points,0.9,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),guideline,Mean nuclear morphology metric: concave_points assesses average cellular differentiation
+breast_cancer,mean_symmetry,0.5,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),expert,Mean nuclear morphology metric: symmetry assesses average cellular differentiation
+breast_cancer,mean_fractal_dimension,0.3,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),expert,Mean nuclear morphology metric: fractal_dimension assesses average cellular differentiation
+breast_cancer,radius_error,0.5,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: radius measures intra-tumor morphological variation
+breast_cancer,texture_error,0.3,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: texture measures intra-tumor morphological variation
+breast_cancer,perimeter_error,0.5,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: perimeter measures intra-tumor morphological variation
+breast_cancer,area_error,0.5,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: area measures intra-tumor morphological variation
+breast_cancer,smoothness_error,0.2,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: smoothness measures intra-tumor morphological variation
+breast_cancer,compactness_error,0.3,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: compactness measures intra-tumor morphological variation
+breast_cancer,concavity_error,0.4,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: concavity measures intra-tumor morphological variation
+breast_cancer,concave_points_error,0.4,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: concave_points measures intra-tumor morphological variation
+breast_cancer,symmetry_error,0.3,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: symmetry measures intra-tumor morphological variation
+breast_cancer,fractal_dimension_error,0.2,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),review,Standard error of nuclear metric: fractal_dimension measures intra-tumor morphological variation
+breast_cancer,worst_radius,1.0,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: radius indicates peak extreme nuclear atypia
+breast_cancer,worst_texture,0.6,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),expert,Largest 3-cell nuclear measurement: texture indicates peak extreme nuclear atypia
+breast_cancer,worst_perimeter,1.0,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: perimeter indicates peak extreme nuclear atypia
+breast_cancer,worst_area,1.0,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: area indicates peak extreme nuclear atypia
+breast_cancer,worst_smoothness,0.5,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),expert,Largest 3-cell nuclear measurement: smoothness indicates peak extreme nuclear atypia
+breast_cancer,worst_compactness,0.8,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: compactness indicates peak extreme nuclear atypia
+breast_cancer,worst_concavity,1.0,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: concavity indicates peak extreme nuclear atypia
+breast_cancer,worst_concave_points,1.0,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),guideline,Largest 3-cell nuclear measurement: concave_points indicates peak extreme nuclear atypia
+breast_cancer,worst_symmetry,0.6,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),expert,Largest 3-cell nuclear measurement: symmetry indicates peak extreme nuclear atypia
+breast_cancer,worst_fractal_dimension,0.3,Author-assigned from FNA literature (Street/Wolberg/Mangasarian),expert,Largest 3-cell nuclear measurement: fractal_dimension indicates peak extreme nuclear atypia
 ckd,age,0.55,KDIGO Clinical Practice Guideline,guideline,Non-modifiable demographic risk factor; declining eGFR with advancing age
 ckd,bp,0.8,KDIGO Blood Pressure Management Guideline,guideline,Hypertension is both a primary cause and consequence of CKD progression
 ckd,sg,0.85,KDIGO Urine Evaluation Consensus,guideline,Specific gravity measures renal tubular concentrating ability; loss reflects tubular damage

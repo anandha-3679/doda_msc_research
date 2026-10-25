@@ -5,8 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "doda"
 version = "0.1.0"
-description = "Domain-Oriented Dual-Objective Assessment for Clinical Feature Selection"
+description = "Decoupled Operator-Driven Architecture for Clinical Feature Selection"
 readme = "README.md"
+
 authors = [
     { name = "MSc Research Author" }
 ]
